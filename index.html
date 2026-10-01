@@ -1,0 +1,1685 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#1a3a2a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="SyndicCité">
+<meta name="description" content="Gestion de syndic de copropriétaires">
+<link rel="manifest" href="manifest.json">
+<title>SyndicCité — Gestion de Copropriété</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-900: #0d2b1a;
+    --green-800: #1a3a2a;
+    --green-700: #1f4a32;
+    --green-600: #256040;
+    --green-500: #2e7d50;
+    --green-400: #3d9966;
+    --green-300: #5cb87e;
+    --green-200: #96d4af;
+    --green-100: #d0eedb;
+    --green-50: #edf7f1;
+    --amber-600: #c47f1a;
+    --amber-400: #f0a500;
+    --amber-100: #fef3d4;
+    --red-600: #b83232;
+    --red-100: #fde8e8;
+    --blue-600: #1e5fa5;
+    --blue-100: #e3edf8;
+    --gray-900: #1a1c1b;
+    --gray-700: #3a3d3c;
+    --gray-500: #6b7170;
+    --gray-300: #b8bdbb;
+    --gray-100: #f0f2f1;
+    --gray-50: #f8faf9;
+    --white: #ffffff;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.10);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,0.13);
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 18px;
+    --radius-xl: 24px;
+    --font-display: 'Fraunces', Georgia, serif;
+    --font-body: 'DM Sans', system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--gray-50);
+    color: var(--gray-900);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  .app-nav {
+    background: var(--green-800);
+    color: white;
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: var(--shadow-md);
+  }
+  .nav-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+  }
+  .nav-logo {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: -0.3px;
+  }
+  .nav-logo span { color: var(--green-300); }
+  .nav-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--green-200);
+  }
+  .avatar {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: var(--green-600);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 600; font-size: 13px; color: white;
+    flex-shrink: 0;
+  }
+  .nav-tabs {
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+  .nav-tabs::-webkit-scrollbar { display: none; }
+  .nav-tab {
+    flex-shrink: 0;
+    padding: 10px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--green-200);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: all 0.2s;
+  }
+  .nav-tab.active {
+    color: white;
+    border-bottom-color: var(--green-300);
+  }
+  .nav-tab:hover { color: white; }
+
+  /* MAIN */
+  .main { padding: 20px; max-width: 900px; margin: 0 auto; }
+
+  /* CARDS */
+  .card {
+    background: white;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(0,0,0,0.06);
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  .card-header {
+    padding: 16px 20px 12px;
+    border-bottom: 1px solid var(--gray-100);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .card-title {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--gray-900);
+  }
+  .card-body { padding: 16px 20px; }
+
+  /* STATS GRID */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  @media (min-width: 600px) { .stats-grid { grid-template-columns: repeat(4, 1fr); } }
+  .stat-card {
+    background: white;
+    border-radius: var(--radius-md);
+    padding: 16px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(0,0,0,0.06);
+  }
+  .stat-label {
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--gray-500);
+    margin-bottom: 6px;
+  }
+  .stat-value {
+    font-family: var(--font-display);
+    font-size: 26px;
+    font-weight: 500;
+    color: var(--green-700);
+    line-height: 1;
+  }
+  .stat-sub { font-size: 12px; color: var(--gray-500); margin-top: 4px; }
+
+  /* SECTION HEADING */
+  .section-heading {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--gray-900);
+    margin-bottom: 16px;
+    letter-spacing: -0.3px;
+  }
+
+  /* BADGE */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 99px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+  }
+  .badge-green { background: var(--green-100); color: var(--green-700); }
+  .badge-amber { background: var(--amber-100); color: var(--amber-600); }
+  .badge-red { background: var(--red-100); color: var(--red-600); }
+  .badge-blue { background: var(--blue-100); color: var(--blue-600); }
+  .badge-gray { background: var(--gray-100); color: var(--gray-700); }
+
+  /* BUTTONS */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 18px;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+  }
+  .btn-primary {
+    background: var(--green-600);
+    color: white;
+  }
+  .btn-primary:hover { background: var(--green-700); }
+  .btn-outline {
+    background: transparent;
+    color: var(--green-700);
+    border: 1.5px solid var(--green-300);
+  }
+  .btn-outline:hover { background: var(--green-50); }
+  .btn-danger {
+    background: var(--red-100);
+    color: var(--red-600);
+  }
+  .btn-sm { padding: 6px 12px; font-size: 12px; }
+  .btn-icon {
+    width: 36px; height: 36px;
+    padding: 0;
+    border-radius: 50%;
+    justify-content: center;
+    background: var(--gray-100);
+    color: var(--gray-700);
+    font-size: 16px;
+  }
+
+  /* TABLE */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th {
+    text-align: left;
+    padding: 10px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: var(--gray-500);
+    background: var(--gray-50);
+    border-bottom: 1px solid var(--gray-100);
+  }
+  td {
+    padding: 12px;
+    border-bottom: 1px solid var(--gray-100);
+    color: var(--gray-900);
+    vertical-align: middle;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--gray-50); }
+
+  /* FORM */
+  .form-grid { display: grid; gap: 14px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 500px) { .form-row { grid-template-columns: 1fr; } }
+  .form-group { display: flex; flex-direction: column; gap: 5px; }
+  label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--gray-700);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  input, select, textarea {
+    font-family: var(--font-body);
+    font-size: 14px;
+    padding: 10px 12px;
+    border: 1.5px solid var(--gray-300);
+    border-radius: var(--radius-sm);
+    color: var(--gray-900);
+    background: white;
+    transition: border-color 0.15s;
+    outline: none;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--green-400);
+  }
+  textarea { resize: vertical; min-height: 80px; }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 200;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 0;
+  }
+  @media (min-width: 600px) {
+    .modal-overlay { align-items: center; padding: 20px; }
+  }
+  .modal {
+    background: white;
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    width: 100%;
+    max-width: 560px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 24px;
+    box-shadow: var(--shadow-lg);
+    animation: slideUp 0.25s ease;
+  }
+  @media (min-width: 600px) {
+    .modal { border-radius: var(--radius-xl); }
+  }
+  @keyframes slideUp { from { transform: translateY(20px); opacity:0; } to { transform: translateY(0); opacity:1; } }
+  .modal-title {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 20px;
+    color: var(--gray-900);
+  }
+  .modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--gray-100);
+  }
+
+  /* PROGRESS BAR */
+  .progress-bar {
+    height: 6px;
+    background: var(--gray-100);
+    border-radius: 99px;
+    overflow: hidden;
+    margin-top: 6px;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 99px;
+    background: var(--green-500);
+    transition: width 0.5s ease;
+  }
+
+  /* HERO BANNER */
+  .hero-banner {
+    background: linear-gradient(135deg, var(--green-800) 0%, var(--green-600) 100%);
+    color: white;
+    border-radius: var(--radius-xl);
+    padding: 24px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-banner::after {
+    content: '';
+    position: absolute;
+    right: -20px; top: -20px;
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+  }
+  .hero-banner::before {
+    content: '';
+    position: absolute;
+    right: 30px; bottom: -30px;
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+  }
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: 24px;
+    font-weight: 300;
+    line-height: 1.3;
+    margin-bottom: 4px;
+  }
+  .hero-sub { font-size: 14px; color: var(--green-200); margin-bottom: 16px; }
+
+  /* LIST ITEM */
+  .list-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--gray-100);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .list-item:last-child { border-bottom: none; }
+  .list-item:hover { background: var(--gray-50); }
+  .list-icon {
+    width: 40px; height: 40px; border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .list-icon-green { background: var(--green-100); }
+  .list-icon-amber { background: var(--amber-100); }
+  .list-icon-red { background: var(--red-100); }
+  .list-info { flex: 1; min-width: 0; }
+  .list-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--gray-900);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .list-detail { font-size: 12px; color: var(--gray-500); margin-top: 2px; }
+  .list-right { text-align: right; flex-shrink: 0; }
+  .list-amount { font-size: 15px; font-weight: 600; color: var(--green-700); }
+  .list-date { font-size: 11px; color: var(--gray-500); margin-top: 2px; }
+
+  /* SEARCH */
+  .search-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: white;
+    border: 1.5px solid var(--gray-300);
+    border-radius: var(--radius-sm);
+    padding: 8px 14px;
+    margin-bottom: 16px;
+  }
+  .search-bar input {
+    border: none;
+    flex: 1;
+    font-size: 14px;
+    padding: 0;
+    background: transparent;
+  }
+  .search-bar input:focus { border: none; }
+
+  /* SECTOR CARD */
+  .sector-card {
+    background: white;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(0,0,0,0.06);
+    box-shadow: var(--shadow-sm);
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+  .sector-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .sector-name {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--gray-900);
+  }
+  .sector-meta { font-size: 12px; color: var(--gray-500); margin-top: 2px; }
+
+  /* ACTIVITY CHIPS */
+  .activities-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .activity-chip {
+    background: white;
+    border: 1.5px solid var(--gray-100);
+    border-radius: var(--radius-md);
+    padding: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .activity-chip:hover { border-color: var(--green-300); background: var(--green-50); }
+  .activity-chip.selected { border-color: var(--green-500); background: var(--green-50); }
+  .activity-chip-icon { font-size: 22px; margin-bottom: 6px; }
+  .activity-chip-name { font-size: 12px; font-weight: 600; color: var(--gray-700); }
+  .activity-chip-amount { font-size: 14px; font-weight: 700; color: var(--green-700); margin-top: 2px; }
+
+  /* TABS INSIDE PAGE */
+  .page-tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--gray-100);
+    border-radius: var(--radius-sm);
+    padding: 4px;
+    margin-bottom: 20px;
+  }
+  .page-tab {
+    flex: 1;
+    padding: 8px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--gray-500);
+    transition: all 0.15s;
+  }
+  .page-tab.active { background: white; color: var(--green-700); box-shadow: var(--shadow-sm); }
+
+  /* NOTIFICATION DOT */
+  .notif-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--amber-400);
+    display: inline-block;
+    margin-left: 4px;
+    vertical-align: middle;
+  }
+
+  /* EMPTY STATE */
+  .empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--gray-500);
+  }
+  .empty-state-icon { font-size: 40px; margin-bottom: 12px; }
+  .empty-state-text { font-size: 14px; }
+
+  /* HIDDEN */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ALERT */
+  .alert {
+    padding: 12px 16px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    margin-bottom: 16px;
+    border-left: 3px solid;
+  }
+  .alert-success { background: var(--green-50); color: var(--green-700); border-color: var(--green-500); }
+  .alert-warning { background: var(--amber-100); color: var(--amber-600); border-color: var(--amber-400); }
+  .alert-error { background: var(--red-100); color: var(--red-600); border-color: var(--red-600); }
+
+  /* FAB */
+  .fab {
+    position: fixed;
+    bottom: 24px;
+    right: 20px;
+    width: 54px; height: 54px;
+    border-radius: 50%;
+    background: var(--green-600);
+    color: white;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-lg);
+    cursor: pointer;
+    border: none;
+    z-index: 50;
+    transition: transform 0.15s, background 0.15s;
+  }
+  .fab:hover { background: var(--green-700); transform: scale(1.05); }
+
+  /* CHIP STATUS */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 99px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .chip-pending { background: var(--amber-100); color: var(--amber-600); }
+  .chip-validated { background: var(--green-100); color: var(--green-700); }
+  .chip-rejected { background: var(--red-100); color: var(--red-600); }
+
+  /* LOGIN */
+  .login-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: var(--green-800);
+  }
+  .login-card {
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: 32px 28px;
+    width: 100%;
+    max-width: 380px;
+    box-shadow: var(--shadow-lg);
+  }
+  .login-logo {
+    font-family: var(--font-display);
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--green-700);
+    margin-bottom: 4px;
+  }
+  .login-logo span { color: var(--green-400); }
+  .login-sub { font-size: 13px; color: var(--gray-500); margin-bottom: 28px; }
+
+  .role-selector {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .role-btn {
+    padding: 10px 6px;
+    border: 1.5px solid var(--gray-200);
+    border-radius: var(--radius-sm);
+    text-align: center;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--gray-500);
+    transition: all 0.15s;
+  }
+  .role-btn.active {
+    border-color: var(--green-500);
+    background: var(--green-50);
+    color: var(--green-700);
+  }
+  .role-btn-icon { font-size: 20px; display: block; margin-bottom: 4px; }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--gray-100);
+    margin: 16px 0;
+  }
+
+  /* RESPONSIVE */
+  @media (min-width: 768px) {
+    .main { padding: 28px; }
+    .hero-title { font-size: 28px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ====== LOGIN PAGE ====== -->
+<div id="loginPage" class="login-page">
+  <div class="login-card">
+    <div class="login-logo">Syndic<span>Cité</span></div>
+    <div class="login-sub">Gestion de copropriété — Résidence Les Palmiers</div>
+    <div id="loginAlert" style="display:none;" class="alert alert-error"></div>
+    <div class="form-group" style="margin-bottom:14px;">
+      <label>Connexion en tant que</label>
+      <div class="role-selector">
+        <div class="role-btn active" data-role="proprietaire" onclick="selectRole(this)">
+          <span class="role-btn-icon">🏠</span>Propriétaire
+        </div>
+        <div class="role-btn" data-role="responsable" onclick="selectRole(this)">
+          <span class="role-btn-icon">👤</span>Responsable
+        </div>
+        <div class="role-btn" data-role="admin" onclick="selectRole(this)">
+          <span class="role-btn-icon">⚙️</span>Administrateur
+        </div>
+      </div>
+    </div>
+    <div class="form-group" style="margin-bottom:14px;">
+      <label>Identifiant ou N° de lot</label>
+      <input type="text" id="loginId" placeholder="Ex: LOT-042 ou votre email">
+    </div>
+    <div class="form-group" style="margin-bottom:20px;">
+      <label>Mot de passe</label>
+      <input type="password" id="loginPwd" placeholder="••••••••">
+    </div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;padding:13px;" onclick="doLogin()">
+      Se connecter
+    </button>
+    <div style="margin-top:16px;text-align:center;font-size:12px;color:var(--gray-500);">
+      Accès démo : tapez n'importe quel identifiant
+    </div>
+  </div>
+</div>
+
+<!-- ====== MAIN APP ====== -->
+<div id="mainApp" style="display:none;">
+
+<nav class="app-nav">
+  <div class="nav-top">
+    <div class="nav-logo">Syndic<span>Cité</span></div>
+    <div class="nav-user">
+      <span id="navUsername" style="display:none;font-size:12px;"></span>
+      <div class="avatar" id="navAvatar">?</div>
+      <button onclick="doLogout()" style="background:rgba(255,255,255,0.1);border:none;color:var(--green-200);font-size:12px;padding:5px 10px;border-radius:6px;cursor:pointer;">Sortir</button>
+    </div>
+  </div>
+  <div class="nav-tabs" id="navTabs"></div>
+</nav>
+
+<div class="main" id="mainContent"></div>
+
+<button class="fab" id="fabBtn" style="display:none;" onclick="onFabClick()">＋</button>
+
+</div>
+
+<!-- ====== MODAL ====== -->
+<div class="modal-overlay" id="modalOverlay" style="display:none;" onclick="closeModal(event)">
+  <div class="modal" id="modalContent" onclick="event.stopPropagation()">
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// DATA STORE
+// ============================================================
+const DB = {
+  secteurs: [
+    { id:'S1', nom:'Secteur A — Nord', responsable:'Kofi Asante', lots:['A01','A02','A03','A04','A05','A06'] },
+    { id:'S2', nom:'Secteur B — Sud', responsable:'Fatou Diallo', lots:['B01','B02','B03','B04','B05'] },
+    { id:'S3', nom:'Secteur C — Est', responsable:'Jean-Pierre Bamba', lots:['C01','C02','C03','C04'] },
+    { id:'S4', nom:'Secteur D — Ouest', responsable:'Aïcha Touré', lots:['D01','D02','D03','D04','D05','D06'] },
+  ],
+  proprietaires: [
+    { id:'P001', nom:'Kouamé Brou', tel:'07 12 34 56', email:'k.brou@mail.ci', lot:'A01', ilot:'1', secteur:'S1', statut:'actif' },
+    { id:'P002', nom:'Marie-Claire Yao', tel:'05 98 76 54', email:'mc.yao@mail.ci', lot:'A02', ilot:'1', secteur:'S1', statut:'actif' },
+    { id:'P003', nom:'Ibrahim Coulibaly', tel:'07 65 43 21', email:'i.coulibaly@mail.ci', lot:'A03', ilot:'2', secteur:'S1', statut:'actif' },
+    { id:'P004', nom:'Estelle Gnangoran', tel:'05 11 22 33', email:'e.gnangoran@mail.ci', lot:'B01', ilot:'3', secteur:'S2', statut:'actif' },
+    { id:'P005', nom:'Barthélemy Konan', tel:'07 44 55 66', email:'b.konan@mail.ci', lot:'B02', ilot:'3', secteur:'S2', statut:'actif' },
+    { id:'P006', nom:'Sylvie Ouattara', tel:'07 77 88 99', email:'s.ouattara@mail.ci', lot:'C01', ilot:'4', secteur:'S3', statut:'actif' },
+    { id:'P007', nom:'Daouda Traoré', tel:'05 33 44 55', email:'d.traore@mail.ci', lot:'C02', ilot:'4', secteur:'S3', statut:'actif' },
+    { id:'P008', nom:'Nadège Akoto', tel:'07 66 77 88', email:'n.akoto@mail.ci', lot:'D01', ilot:'5', secteur:'S4', statut:'actif' },
+    { id:'P009', nom:'Roger Kassi', tel:'05 22 33 44', email:'r.kassi@mail.ci', lot:'D02', ilot:'5', secteur:'S4', statut:'actif' },
+    { id:'P010', nom:'Amina Sanogo', tel:'07 55 66 77', email:'a.sanogo@mail.ci', lot:'D03', ilot:'6', secteur:'S4', statut:'actif' },
+    { id:'P011', nom:'Yves N\'Goran', tel:'05 88 99 00', email:'y.ngoran@mail.ci', lot:'A04', ilot:'2', secteur:'S1', statut:'actif' },
+    { id:'P012', nom:'Cécile Abouo', tel:'07 23 45 67', email:'c.abouo@mail.ci', lot:'B03', ilot:'3', secteur:'S2', statut:'actif' },
+  ],
+  activites: [
+    { id:'ACT1', nom:'Gardiennage', icone:'🛡️', montant:5000, periodicite:'mensuel', description:'Service de sécurité 24h/24' },
+    { id:'ACT2', nom:'Entretien espaces verts', icone:'🌿', montant:3000, periodicite:'mensuel', description:'Tonte, arrosage, élagage' },
+    { id:'ACT3', nom:'Ramassage ordures', icone:'🗑️', montant:2000, periodicite:'mensuel', description:'Collecte bi-hebdomadaire' },
+    { id:'ACT4', nom:'Éclairage public', icone:'💡', montant:1500, periodicite:'mensuel', description:'Maintenance éclairage voirie' },
+    { id:'ACT5', nom:'Entretien voirie', icone:'🛣️', montant:4000, periodicite:'trimestriel', description:'Réparation routes internes' },
+    { id:'ACT6', nom:'Piscine commune', icone:'🏊', montant:3500, periodicite:'mensuel', description:'Entretien piscine résidence' },
+  ],
+  paiements: [
+    { id:'PAY001', proprietaireId:'P001', activiteId:'ACT1', montant:5000, date:'2025-01-15', statut:'valide', validePar:'Kofi Asante', note:'' },
+    { id:'PAY002', proprietaireId:'P001', activiteId:'ACT2', montant:3000, date:'2025-01-15', statut:'valide', validePar:'Kofi Asante', note:'' },
+    { id:'PAY003', proprietaireId:'P002', activiteId:'ACT1', montant:5000, date:'2025-01-20', statut:'valide', validePar:'Kofi Asante', note:'' },
+    { id:'PAY004', proprietaireId:'P003', activiteId:'ACT1', montant:5000, date:'2025-01-22', statut:'en_attente', validePar:'', note:'' },
+    { id:'PAY005', proprietaireId:'P004', activiteId:'ACT1', montant:5000, date:'2025-01-18', statut:'valide', validePar:'Fatou Diallo', note:'' },
+    { id:'PAY006', proprietaireId:'P005', activiteId:'ACT3', montant:2000, date:'2025-01-25', statut:'en_attente', validePar:'', note:'' },
+    { id:'PAY007', proprietaireId:'P006', activiteId:'ACT1', montant:5000, date:'2025-01-19', statut:'valide', validePar:'Jean-Pierre Bamba', note:'' },
+    { id:'PAY008', proprietaireId:'P001', activiteId:'ACT3', montant:2000, date:'2025-02-05', statut:'en_attente', validePar:'', note:'' },
+    { id:'PAY009', proprietaireId:'P008', activiteId:'ACT1', montant:5000, date:'2025-02-01', statut:'rejete', validePar:'Aïcha Touré', note:'Paiement partiel refusé' },
+    { id:'PAY010', proprietaireId:'P009', activiteId:'ACT2', montant:3000, date:'2025-02-10', statut:'en_attente', validePar:'', note:'' },
+  ],
+  nextPayId: 11,
+};
+
+// ============================================================
+// AUTH STATE
+// ============================================================
+let currentUser = null;
+let currentRole = 'proprietaire';
+let selectedRole = 'proprietaire';
+
+function selectRole(el) {
+  document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  selectedRole = el.dataset.role;
+}
+
+function doLogin() {
+  const id = document.getElementById('loginId').value.trim();
+  const pwd = document.getElementById('loginPwd').value;
+  if (!id) { showLoginError('Veuillez entrer un identifiant.'); return; }
+
+  document.getElementById('loginAlert').style.display = 'none';
+
+  if (selectedRole === 'admin') {
+    currentUser = { nom: 'Administrateur', initiales: 'AD', role: 'admin', secteur: null, proprietaireId: null };
+  } else if (selectedRole === 'responsable') {
+    const secteur = DB.secteurs.find(s => s.responsable.toLowerCase().includes(id.toLowerCase()));
+    const s = secteur || DB.secteurs[0];
+    currentUser = { nom: s.responsable, initiales: initiales(s.responsable), role: 'responsable', secteur: s.id, proprietaireId: null };
+  } else {
+    const prop = DB.proprietaires.find(p => p.lot.toLowerCase() === id.toLowerCase() || p.nom.toLowerCase().includes(id.toLowerCase()) || id.toLowerCase().includes(p.id.toLowerCase()));
+    const p = prop || DB.proprietaires[0];
+    currentUser = { nom: p.nom, initiales: initiales(p.nom), role: 'proprietaire', secteur: p.secteur, proprietaireId: p.id };
+  }
+
+  currentRole = currentUser.role;
+  document.getElementById('loginPage').style.display = 'none';
+  document.getElementById('mainApp').style.display = 'block';
+  initApp();
+}
+
+function doLogout() {
+  document.getElementById('mainApp').style.display = 'none';
+  document.getElementById('loginPage').style.display = 'flex';
+  currentUser = null;
+}
+
+function showLoginError(msg) {
+  const el = document.getElementById('loginAlert');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function initiales(nom) {
+  return nom.split(' ').slice(0,2).map(n=>n[0]).join('').toUpperCase();
+}
+
+// ============================================================
+// APP INIT
+// ============================================================
+const TABS = {
+  admin: [
+    { id:'dashboard', label:'Tableau de bord', icon:'📊' },
+    { id:'proprietaires', label:'Propriétaires', icon:'🏠' },
+    { id:'secteurs', label:'Secteurs', icon:'🗺️' },
+    { id:'activites', label:'Activités', icon:'⚙️' },
+    { id:'paiements', label:'Paiements', icon:'💳' },
+    { id:'rapports', label:'Rapports', icon:'📈' },
+  ],
+  responsable: [
+    { id:'dashboard', label:'Tableau de bord', icon:'📊' },
+    { id:'validations', label:'Validations', icon:'✅' },
+    { id:'proprietaires', label:'Mon secteur', icon:'🏘️' },
+    { id:'rapports', label:'Rapports', icon:'📈' },
+  ],
+  proprietaire: [
+    { id:'dashboard', label:'Accueil', icon:'🏠' },
+    { id:'payer', label:'Payer', icon:'💳' },
+    { id:'historique', label:'Historique', icon:'📋' },
+    { id:'profil', label:'Profil', icon:'👤' },
+  ],
+};
+
+let currentTab = null;
+const FAB_TABS = { admin: ['proprietaires','activites','secteurs'], responsable: [], proprietaire: ['payer'] };
+
+function initApp() {
+  document.getElementById('navAvatar').textContent = currentUser.initiales;
+  document.getElementById('navUsername').style.display = 'block';
+  document.getElementById('navUsername').textContent = currentUser.nom;
+
+  const tabs = TABS[currentRole];
+  const tabsEl = document.getElementById('navTabs');
+  tabsEl.innerHTML = tabs.map(t => `<div class="nav-tab" data-tab="${t.id}" onclick="switchTab('${t.id}')">${t.label}</div>`).join('');
+
+  switchTab(tabs[0].id);
+}
+
+function switchTab(tabId) {
+  currentTab = tabId;
+  document.querySelectorAll('.nav-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.tab === tabId);
+  });
+
+  const fabTabs = FAB_TABS[currentRole] || [];
+  document.getElementById('fabBtn').style.display = fabTabs.includes(tabId) ? 'flex' : 'none';
+
+  renderPage(tabId);
+}
+
+function renderPage(tabId) {
+  const el = document.getElementById('mainContent');
+  if (currentRole === 'admin') renderAdmin(tabId, el);
+  else if (currentRole === 'responsable') renderResponsable(tabId, el);
+  else renderProprietaire(tabId, el);
+}
+
+function onFabClick() {
+  if (currentRole === 'admin') {
+    if (currentTab === 'proprietaires') openModalAjoutProprietaire();
+    else if (currentTab === 'activites') openModalAjoutActivite();
+    else if (currentTab === 'secteurs') openModalAjoutSecteur();
+  } else if (currentRole === 'proprietaire') {
+    if (currentTab === 'payer') openModalPaiement();
+  }
+}
+
+// ============================================================
+// ADMIN VIEWS
+// ============================================================
+function renderAdmin(tab, el) {
+  if (tab === 'dashboard') el.innerHTML = renderAdminDashboard();
+  else if (tab === 'proprietaires') el.innerHTML = renderAdminProprietaires();
+  else if (tab === 'activites') el.innerHTML = renderAdminActivites();
+  else if (tab === 'secteurs') el.innerHTML = renderAdminSecteurs();
+  else if (tab === 'paiements') el.innerHTML = renderAdminPaiements();
+  else if (tab === 'rapports') el.innerHTML = renderRapports();
+}
+
+function renderAdminDashboard() {
+  const totalProps = DB.proprietaires.length;
+  const totalPays = DB.paiements.filter(p=>p.statut==='valide').reduce((a,p)=>a+p.montant,0);
+  const enAttente = DB.paiements.filter(p=>p.statut==='en_attente').length;
+  const totalActivites = DB.activites.length;
+
+  return `
+  <div class="hero-banner">
+    <div class="hero-title">Bonjour, Administrateur 👋</div>
+    <div class="hero-sub">Résidence Les Palmiers — ${new Date().toLocaleDateString('fr-FR',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <span class="badge badge-green">✓ Système actif</span>
+      ${enAttente > 0 ? `<span class="badge badge-amber">⏳ ${enAttente} validation(s) en attente</span>` : ''}
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-label">Propriétaires</div><div class="stat-value">${totalProps}</div><div class="stat-sub">lots enregistrés</div></div>
+    <div class="stat-card"><div class="stat-label">Total encaissé</div><div class="stat-value">${(totalPays/1000).toFixed(0)}k</div><div class="stat-sub">FCFA validés</div></div>
+    <div class="stat-card"><div class="stat-label">En attente</div><div class="stat-value" style="color:var(--amber-600);">${enAttente}</div><div class="stat-sub">paiements</div></div>
+    <div class="stat-card"><div class="stat-label">Activités</div><div class="stat-value">${totalActivites}</div><div class="stat-sub">services actifs</div></div>
+  </div>
+
+  <div class="section-heading">Secteurs</div>
+  ${DB.secteurs.map(s => {
+    const lots = s.lots.length;
+    const paysSecteur = DB.paiements.filter(p => {
+      const prop = DB.proprietaires.find(pr => pr.id === p.proprietaireId);
+      return prop && prop.secteur === s.id && p.statut === 'valide';
+    }).length;
+    const pct = Math.round((paysSecteur / (lots * DB.activites.length)) * 100);
+    return `<div class="sector-card">
+      <div class="sector-header">
+        <div><div class="sector-name">${s.nom}</div><div class="sector-meta">Resp. : ${s.responsable} · ${lots} lots</div></div>
+        <span class="badge ${pct>70?'badge-green':pct>40?'badge-amber':'badge-red'}">${pct}%</span>
+      </div>
+      <div style="font-size:12px;color:var(--gray-500);margin-bottom:4px;">${paysSecteur} paiements validés</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${Math.min(pct,100)}%"></div></div>
+    </div>`;
+  }).join('')}
+
+  <div class="section-heading" style="margin-top:24px;">Derniers paiements</div>
+  <div class="card">
+    ${DB.paiements.slice(-5).reverse().map(p => {
+      const prop = DB.proprietaires.find(pr=>pr.id===p.proprietaireId);
+      const act = DB.activites.find(a=>a.id===p.activiteId);
+      return `<div class="list-item">
+        <div class="list-icon list-icon-green">${act?.icone||'💳'}</div>
+        <div class="list-info">
+          <div class="list-name">${prop?.nom||'?'}</div>
+          <div class="list-detail">Lot ${prop?.lot} · ${act?.nom}</div>
+        </div>
+        <div class="list-right">
+          <div class="list-amount">${p.montant.toLocaleString()} FCFA</div>
+          <div class="list-date"><span class="chip ${p.statut==='valide'?'chip-validated':p.statut==='en_attente'?'chip-pending':'chip-rejected'}">${p.statut==='valide'?'Validé':p.statut==='en_attente'?'En attente':'Rejeté'}</span></div>
+        </div>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+function renderAdminProprietaires() {
+  const q = window._searchQ || '';
+  const filtered = DB.proprietaires.filter(p =>
+    p.nom.toLowerCase().includes(q.toLowerCase()) ||
+    p.lot.toLowerCase().includes(q.toLowerCase()) ||
+    p.ilot.includes(q)
+  );
+  return `
+  <div class="section-heading">Propriétaires <span style="font-size:14px;font-weight:400;color:var(--gray-500);">(${DB.proprietaires.length})</span></div>
+  <div class="search-bar">
+    <span>🔍</span>
+    <input type="text" placeholder="Rechercher par nom, lot, îlot…" value="${q}" oninput="window._searchQ=this.value;renderPage('proprietaires')">
+  </div>
+  <div class="card">
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>Propriétaire</th><th>Lot / Îlot</th><th>Secteur</th><th>Tél.</th><th>Actions</th>
+        </tr></thead>
+        <tbody>
+          ${filtered.map(p => {
+            const sect = DB.secteurs.find(s=>s.id===p.secteur);
+            return `<tr>
+              <td><div style="font-weight:500;">${p.nom}</div><div style="font-size:11px;color:var(--gray-500);">${p.email}</div></td>
+              <td><span class="badge badge-green">LOT ${p.lot}</span> <span style="font-size:11px;color:var(--gray-500);">Îlot ${p.ilot}</span></td>
+              <td><span style="font-size:12px;">${sect?.nom||'?'}</span></td>
+              <td>${p.tel}</td>
+              <td><button class="btn btn-outline btn-sm" onclick="viewProprietaire('${p.id}')">Voir</button></td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
+  </div>`;
+}
+
+function viewProprietaire(id) {
+  const p = DB.proprietaires.find(pr=>pr.id===id);
+  const sect = DB.secteurs.find(s=>s.id===p.secteur);
+  const pais = DB.paiements.filter(pay=>pay.proprietaireId===id);
+  const total = pais.filter(pay=>pay.statut==='valide').reduce((a,pay)=>a+pay.montant,0);
+  document.getElementById('modalBody').innerHTML = `
+    <div class="modal-title">Fiche propriétaire</div>
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;">
+      <div class="avatar" style="width:52px;height:52px;font-size:18px;">${initiales(p.nom)}</div>
+      <div><div style="font-size:18px;font-weight:600;">${p.nom}</div><div style="font-size:13px;color:var(--gray-500);">Lot ${p.lot} · Îlot ${p.ilot}</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;">
+      <div class="stat-card"><div class="stat-label">Total payé</div><div class="stat-value">${(total/1000).toFixed(1)}k</div><div class="stat-sub">FCFA validés</div></div>
+      <div class="stat-card"><div class="stat-label">Paiements</div><div class="stat-value">${pais.length}</div><div class="stat-sub">${pais.filter(p=>p.statut==='en_attente').length} en attente</div></div>
+    </div>
+    <div style="font-size:13px;color:var(--gray-500);margin-bottom:4px;">Secteur : ${sect?.nom||'?'}</div>
+    <div style="font-size:13px;color:var(--gray-500);margin-bottom:4px;">Tél : ${p.tel}</div>
+    <div style="font-size:13px;color:var(--gray-500);">Email : ${p.email}</div>
+    <div class="modal-actions"><button class="btn btn-outline" onclick="closeModal()">Fermer</button></div>`;
+  document.getElementById('modalOverlay').style.display = 'flex';
+}
+
+function renderAdminActivites() {
+  return `
+  <div class="section-heading">Activités & Cotisations</div>
+  <div class="activities-grid">
+    ${DB.activites.map(a => `
+      <div class="activity-chip" onclick="viewActivite('${a.id}')">
+        <div class="activity-chip-icon">${a.icone}</div>
+        <div class="activity-chip-name">${a.nom}</div>
+        <div class="activity-chip-amount">${a.montant.toLocaleString()} F</div>
+        <div style="font-size:10px;color:var(--gray-500);margin-top:2px;">${a.periodicite}</div>
+      </div>`).join('')}
+  </div>
+  <div class="card">
+    <div class="card-header"><div class="card-title">Détail des activités</div></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Activité</th><th>Montant</th><th>Période</th><th>Encaissé</th><th></th></tr></thead>
+        <tbody>
+          ${DB.activites.map(a => {
+            const enc = DB.paiements.filter(p=>p.activiteId===a.id&&p.statut==='valide').reduce((s,p)=>s+p.montant,0);
+            return `<tr>
+              <td><span style="margin-right:8px;">${a.icone}</span>${a.nom}</td>
+              <td><strong>${a.montant.toLocaleString()}</strong> FCFA</td>
+              <td><span class="badge badge-blue">${a.periodicite}</span></td>
+              <td>${enc.toLocaleString()} FCFA</td>
+              <td><button class="btn btn-outline btn-sm" onclick="openModalEditActivite('${a.id}')">Modifier</button></td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
+  </div>`;
+}
+
+function renderAdminSecteurs() {
+  return `
+  <div class="section-heading">Secteurs de la cité</div>
+  ${DB.secteurs.map(s => {
+    const proprietairesSect = DB.proprietaires.filter(p=>p.secteur===s.id);
+    return `<div class="card" style="margin-bottom:16px;">
+      <div class="card-header">
+        <div>
+          <div class="card-title">📍 ${s.nom}</div>
+          <div style="font-size:12px;color:var(--gray-500);margin-top:2px;">Responsable : ${s.responsable}</div>
+        </div>
+        <span class="badge badge-green">${proprietairesSect.length} lots</span>
+      </div>
+      <div class="card-body" style="padding-top:8px;">
+        <div style="display:flex;flex-wrap:wrap;gap:6px;">
+          ${proprietairesSect.map(p=>`<span class="badge badge-gray">Lot ${p.lot} — ${p.nom}</span>`).join('')}
+        </div>
+      </div>
+    </div>`;
+  }).join('')}`;
+}
+
+function renderAdminPaiements() {
+  const filtre = window._paiementFiltre || 'tous';
+  let pays = DB.paiements;
+  if (filtre !== 'tous') pays = pays.filter(p=>p.statut===filtre);
+
+  return `
+  <div class="section-heading">Paiements</div>
+  <div class="page-tabs">
+    <div class="page-tab ${filtre==='tous'?'active':''}" onclick="window._paiementFiltre='tous';renderPage('paiements')">Tous (${DB.paiements.length})</div>
+    <div class="page-tab ${filtre==='en_attente'?'active':''}" onclick="window._paiementFiltre='en_attente';renderPage('paiements')">En attente (${DB.paiements.filter(p=>p.statut==='en_attente').length})</div>
+    <div class="page-tab ${filtre==='valide'?'active':''}" onclick="window._paiementFiltre='valide';renderPage('paiements')">Validés (${DB.paiements.filter(p=>p.statut==='valide').length})</div>
+  </div>
+  <div class="card">
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Propriétaire</th><th>Activité</th><th>Montant</th><th>Date</th><th>Statut</th><th>Action</th></tr></thead>
+        <tbody>
+          ${pays.map(p => {
+            const prop = DB.proprietaires.find(pr=>pr.id===p.proprietaireId);
+            const act = DB.activites.find(a=>a.id===p.activiteId);
+            return `<tr>
+              <td><div style="font-weight:500;">${prop?.nom}</div><div style="font-size:11px;color:var(--gray-500);">Lot ${prop?.lot}</div></td>
+              <td>${act?.icone} ${act?.nom}</td>
+              <td>${p.montant.toLocaleString()} F</td>
+              <td>${new Date(p.date).toLocaleDateString('fr-FR')}</td>
+              <td><span class="chip ${p.statut==='valide'?'chip-validated':p.statut==='en_attente'?'chip-pending':'chip-rejected'}">${p.statut==='valide'?'Validé':p.statut==='en_attente'?'En attente':'Rejeté'}</span></td>
+              <td>${p.statut==='en_attente'?`<button class="btn btn-primary btn-sm" onclick="validerPaiement('${p.id}')">Valider</button>`:'—'}</td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
+  </div>`;
+}
+
+function renderRapports() {
+  const totalGlobal = DB.paiements.filter(p=>p.statut==='valide').reduce((a,p)=>a+p.montant,0);
+  const enAttente = DB.paiements.filter(p=>p.statut==='en_attente').reduce((a,p)=>a+p.montant,0);
+  const totalProps = DB.proprietaires.length;
+
+  return `
+  <div class="section-heading">Rapports financiers</div>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-label">Encaissé total</div><div class="stat-value">${(totalGlobal/1000).toFixed(0)}k</div><div class="stat-sub">FCFA</div></div>
+    <div class="stat-card"><div class="stat-label">En attente</div><div class="stat-value" style="color:var(--amber-600);">${(enAttente/1000).toFixed(0)}k</div><div class="stat-sub">FCFA</div></div>
+    <div class="stat-card"><div class="stat-label">Propriétaires</div><div class="stat-value">${totalProps}</div><div class="stat-sub">enregistrés</div></div>
+    <div class="stat-card"><div class="stat-label">Taux recouvrement</div><div class="stat-value">${Math.round((DB.paiements.filter(p=>p.statut==='valide').length/DB.paiements.length)*100)}%</div><div class="stat-sub">paiements validés</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="card-title">Par activité</div></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Activité</th><th>Nb paiements</th><th>Total validé</th></tr></thead>
+        <tbody>
+          ${DB.activites.map(a => {
+            const pays = DB.paiements.filter(p=>p.activiteId===a.id&&p.statut==='valide');
+            return `<tr>
+              <td>${a.icone} ${a.nom}</td>
+              <td>${pays.length}</td>
+              <td><strong>${pays.reduce((s,p)=>s+p.montant,0).toLocaleString()}</strong> FCFA</td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="card-title">Par secteur</div></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Secteur</th><th>Lots</th><th>Paiements validés</th><th>Total FCFA</th></tr></thead>
+        <tbody>
+          ${DB.secteurs.map(s => {
+            const propsIds = DB.proprietaires.filter(p=>p.secteur===s.id).map(p=>p.id);
+            const pays = DB.paiements.filter(p=>propsIds.includes(p.proprietaireId)&&p.statut==='valide');
+            return `<tr>
+              <td>${s.nom}</td>
+              <td>${s.lots.length}</td>
+              <td>${pays.length}</td>
+              <td><strong>${pays.reduce((a,p)=>a+p.montant,0).toLocaleString()}</strong></td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
+  </div>`;
+}
+
+// ============================================================
+// RESPONSABLE VIEWS
+// ============================================================
+function renderResponsable(tab, el) {
+  if (tab === 'dashboard') el.innerHTML = renderResponsableDashboard();
+  else if (tab === 'validations') el.innerHTML = renderValidations();
+  else if (tab === 'proprietaires') el.innerHTML = renderMonSecteur();
+  else if (tab === 'rapports') el.innerHTML = renderRapports();
+}
+
+function renderResponsableDashboard() {
+  const s = DB.secteurs.find(sec=>sec.id===currentUser.secteur);
+  const propsIds = DB.proprietaires.filter(p=>p.secteur===currentUser.secteur).map(p=>p.id);
+  const paysAtt = DB.paiements.filter(p=>propsIds.includes(p.proprietaireId)&&p.statut==='en_attente');
+  const paysVal = DB.paiements.filter(p=>propsIds.includes(p.proprietaireId)&&p.statut==='valide');
+
+  return `
+  <div class="hero-banner">
+    <div class="hero-title">Bonjour, ${currentUser.nom.split(' ')[0]} 👋</div>
+    <div class="hero-sub">${s?.nom} — Responsable de secteur</div>
+    ${paysAtt.length > 0 ? `<span class="badge badge-amber">⏳ ${paysAtt.length} validation(s) à traiter</span>` : '<span class="badge badge-green">✓ À jour</span>'}
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-label">Propriétaires</div><div class="stat-value">${propsIds.length}</div><div class="stat-sub">dans mon secteur</div></div>
+    <div class="stat-card"><div class="stat-label">À valider</div><div class="stat-value" style="color:var(--amber-600);">${paysAtt.length}</div><div class="stat-sub">en attente</div></div>
+    <div class="stat-card"><div class="stat-label">Validés</div><div class="stat-value">${paysVal.length}</div><div class="stat-sub">paiements</div></div>
+    <div class="stat-card"><div class="stat-label">Encaissé</div><div class="stat-value">${(paysVal.reduce((a,p)=>a+p.montant,0)/1000).toFixed(0)}k</div><div class="stat-sub">FCFA</div></div>
+  </div>
+
+  ${paysAtt.length > 0 ? `
+  <div class="section-heading">À valider maintenant</div>
+  <div class="card">
+    ${paysAtt.map(p => {
+      const prop = DB.proprietaires.find(pr=>pr.id===p.proprietaireId);
+      const act = DB.activites.find(a=>a.id===p.activiteId);
+      return `<div class="list-item">
+        <div class="list-icon list-icon-amber">${act?.icone}</div>
+        <div class="list-info">
+          <div class="list-name">${prop?.nom}</div>
+          <div class="list-detail">Lot ${prop?.lot} · ${act?.nom}</div>
+        </div>
+        <div class="list-right">
+          <div class="list-amount">${p.montant.toLocaleString()} F</div>
+          <div style="display:flex;gap:6px;margin-top:6px;">
+            <button class="btn btn-primary btn-sm" onclick="validerPaiement('${p.id}')">✓</button>
+            <button class="btn btn-danger btn-sm" onclick="rejeterPaiement('${p.id}')">✗</button>
+          </div>
+        </div>
+      </div>`;
+    }).join('')}
+  </div>` : ''}`;
+}
+
+function renderValidations() {
+  const propsIds = DB.proprietaires.filter(p=>p.secteur===currentUser.secteur).map(p=>p.id);
+  const pays = DB.paiements.filter(p=>propsIds.includes(p.proprietaireId)&&p.statut==='en_attente');
+
+  return `
+  <div class="section-heading">Paiements à valider</div>
+  ${pays.length === 0 ? `<div class="empty-state"><div class="empty-state-icon">✅</div><div class="empty-state-text">Aucun paiement en attente de validation.</div></div>` :
+  `<div class="card">
+    ${pays.map(p => {
+      const prop = DB.proprietaires.find(pr=>pr.id===p.proprietaireId);
+      const act = DB.activites.find(a=>a.id===p.activiteId);
+      return `<div class="list-item" style="flex-wrap:wrap;gap:8px;">
+        <div class="list-icon list-icon-amber">${act?.icone}</div>
+        <div class="list-info">
+          <div class="list-name">${prop?.nom} — Lot ${prop?.lot}</div>
+          <div class="list-detail">${act?.nom} · ${new Date(p.date).toLocaleDateString('fr-FR')}</div>
+        </div>
+        <div class="list-right">
+          <div class="list-amount">${p.montant.toLocaleString()} FCFA</div>
+        </div>
+        <div style="width:100%;display:flex;gap:8px;padding-left:54px;">
+          <button class="btn btn-primary btn-sm" onclick="validerPaiement('${p.id}')">✓ Valider</button>
+          <button class="btn btn-danger btn-sm" onclick="rejeterPaiement('${p.id}')">✗ Rejeter</button>
+        </div>
+      </div>`;
+    }).join('')}
+  </div>`}`;
+}
+
+function renderMonSecteur() {
+  const props = DB.proprietaires.filter(p=>p.secteur===currentUser.secteur);
+  return `
+  <div class="section-heading">Propriétaires de mon secteur</div>
+  <div class="card">
+    ${props.map(p => {
+      const pays = DB.paiements.filter(pay=>pay.proprietaireId===p.id);
+      const valides = pays.filter(pay=>pay.statut==='valide').length;
+      return `<div class="list-item">
+        <div class="avatar" style="width:40px;height:40px;flex-shrink:0;">${initiales(p.nom)}</div>
+        <div class="list-info">
+          <div class="list-name">${p.nom}</div>
+          <div class="list-detail">Lot ${p.lot} · Îlot ${p.ilot} · ${p.tel}</div>
+        </div>
+        <div class="list-right">
+          <span class="badge badge-green">${valides} validés</span>
+          ${pays.filter(pay=>pay.statut==='en_attente').length > 0 ? `<div style="margin-top:4px;"><span class="badge badge-amber">${pays.filter(pay=>pay.statut==='en_attente').length} en attente</span></div>` : ''}
+        </div>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+// ============================================================
+// PROPRIETAIRE VIEWS
+// ============================================================
+function renderProprietaire(tab, el) {
+  if (tab === 'dashboard') el.innerHTML = renderProprietaireDashboard();
+  else if (tab === 'payer') el.innerHTML = renderPayer();
+  else if (tab === 'historique') el.innerHTML = renderHistorique();
+  else if (tab === 'profil') el.innerHTML = renderProfil();
+}
+
+function renderProprietaireDashboard() {
+  const prop = DB.proprietaires.find(p=>p.id===currentUser.proprietaireId);
+  if (!prop) return '<div class="empty-state">Propriétaire non trouvé</div>';
+  const sect = DB.secteurs.find(s=>s.id===prop.secteur);
+  const pays = DB.paiements.filter(p=>p.proprietaireId===prop.id);
+  const valides = pays.filter(p=>p.statut==='valide');
+  const enAttente = pays.filter(p=>p.statut==='en_attente');
+  const totalPaye = valides.reduce((a,p)=>a+p.montant,0);
+
+  return `
+  <div class="hero-banner">
+    <div class="hero-title">Bonjour, ${prop.nom.split(' ')[0]} 👋</div>
+    <div class="hero-sub">Lot ${prop.lot} · Îlot ${prop.ilot} · ${sect?.nom}</div>
+    ${enAttente.length > 0 ? `<span class="badge badge-amber">⏳ ${enAttente.length} paiement(s) en attente de validation</span>` : '<span class="badge badge-green">✓ Aucun impayé</span>'}
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-label">Total payé</div><div class="stat-value">${(totalPaye/1000).toFixed(1)}k</div><div class="stat-sub">FCFA validés</div></div>
+    <div class="stat-card"><div class="stat-label">Paiements</div><div class="stat-value">${valides.length}</div><div class="stat-sub">validés</div></div>
+  </div>
+
+  <div class="section-heading">Mes activités</div>
+  <div class="activities-grid">
+    ${DB.activites.map(a => {
+      const dernier = pays.filter(p=>p.activiteId===a.id).sort((x,y)=>new Date(y.date)-new Date(x.date))[0];
+      return `<div class="activity-chip" onclick="switchTab('payer')">
+        <div class="activity-chip-icon">${a.icone}</div>
+        <div class="activity-chip-name">${a.nom}</div>
+        <div class="activity-chip-amount">${a.montant.toLocaleString()} F</div>
+        ${dernier ? `<div style="font-size:9px;color:var(--gray-500);margin-top:2px;">${dernier.statut==='valide'?'✓ Payé':dernier.statut==='en_attente'?'⏳ En attente':'✗ Rejeté'}</div>` : `<div style="font-size:9px;color:var(--red-600);margin-top:2px;">Non payé</div>`}
+      </div>`;
+    }).join('')}
+  </div>
+
+  <div class="section-heading">Historique récent</div>
+  <div class="card">
+    ${pays.length === 0 ? '<div style="padding:20px;text-align:center;color:var(--gray-500);font-size:13px;">Aucun paiement enregistré</div>' :
+    pays.slice(-4).reverse().map(p => {
+      const act = DB.activites.find(a=>a.id===p.activiteId);
+      return `<div class="list-item">
+        <div class="list-icon ${p.statut==='valide'?'list-icon-green':p.statut==='en_attente'?'list-icon-amber':'list-icon-red'}">${act?.icone}</div>
+        <div class="list-info">
+          <div class="list-name">${act?.nom}</div>
+          <div class="list-detail">${new Date(p.date).toLocaleDateString('fr-FR')}</div>
+        </div>
+        <div class="list-right">
+          <div class="list-amount">${p.montant.toLocaleString()} F</div>
+          <div style="margin-top:4px;"><span class="chip ${p.statut==='valide'?'chip-validated':p.statut==='en_attente'?'chip-pending':'chip-rejected'}">${p.statut==='valide'?'Validé':p.statut==='en_attente'?'En attente':'Rejeté'}</span></div>
+        </div>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+function renderPayer() {
+  return `
+  <div class="section-heading">Payer une cotisation</div>
+  <div class="card">
+    <div class="card-header"><div class="card-title">Choisir une activité</div></div>
+    <div class="card-body">
+      <div class="activities-grid" id="actChips">
+        ${DB.activites.map(a=>`
+          <div class="activity-chip" id="chip-${a.id}" onclick="selectActivite('${a.id}')">
+            <div class="activity-chip-icon">${a.icone}</div>
+            <div class="activity-chip-name">${a.nom}</div>
+            <div class="activity-chip-amount">${a.montant.toLocaleString()} FCFA</div>
+            <div style="font-size:10px;color:var(--gray-500);">${a.periodicite}</div>
+          </div>`).join('')}
+      </div>
+      <div id="payFormArea" style="display:none;">
+        <hr class="divider">
+        <div id="payActDetail" style="margin-bottom:16px;padding:12px;background:var(--green-50);border-radius:var(--radius-sm);"></div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Mode de paiement</label>
+            <select id="payMode">
+              <option>Espèces</option>
+              <option>Mobile Money (Orange)</option>
+              <option>Mobile Money (MTN)</option>
+              <option>Virement bancaire</option>
+              <option>Chèque</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Référence / N° de transaction</label>
+            <input type="text" id="payRef" placeholder="Ex: TXN-20250115-001">
+          </div>
+          <div class="form-group">
+            <label>Note (optionnel)</label>
+            <textarea id="payNote" placeholder="Remarque éventuelle…" style="min-height:60px;"></textarea>
+          </div>
+        </div>
+        <div style="margin-top:16px;">
+          <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="soumettreMonPaiement()">
+            💳 Soumettre le paiement
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+let selectedActiviteId = null;
+function selectActivite(id) {
+  selectedActiviteId = id;
+  document.querySelectorAll('.activity-chip').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('chip-'+id).classList.add('selected');
+  const a = DB.activites.find(act=>act.id===id);
+  document.getElementById('payActDetail').innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span style="font-size:24px;">${a.icone}</span>
+      <div>
+        <div style="font-weight:600;">${a.nom}</div>
+        <div style="font-size:13px;color:var(--gray-500);">${a.description}</div>
+      </div>
+      <div style="margin-left:auto;font-size:18px;font-weight:700;color:var(--green-700);">${a.montant.toLocaleString()} FCFA</div>
+    </div>`;
+  document.getElementById('payFormArea').style.display = 'block';
+}
+
+function soumettreMonPaiement() {
+  if (!selectedActiviteId) return;
+  const a = DB.activites.find(act=>act.id===selectedActiviteId);
+  const prop = DB.proprietaires.find(p=>p.id===currentUser.proprietaireId);
+  const note = document.getElementById('payNote').value;
+  const id = 'PAY' + String(DB.nextPayId++).padStart(3,'0');
+  DB.paiements.push({
+    id, proprietaireId: prop.id, activiteId: a.id,
+    montant: a.montant,
+    date: new Date().toISOString().split('T')[0],
+    statut: 'en_attente', validePar: '', note
+  });
+  selectedActiviteId = null;
+  showAlert('Paiement soumis avec succès. En attente de validation par votre responsable de secteur.');
+  switchTab('historique');
+}
+
+function showAlert(msg, type='success') {
+  const el = document.createElement('div');
+  el.className = `alert alert-${type}`;
+  el.textContent = msg;
+  el.style.cssText = 'position:fixed;top:80px;left:50%;transform:translateX(-50%);width:90%;max-width:460px;z-index:300;box-shadow:var(--shadow-lg);';
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(), 3500);
+}
+
+function renderHistorique() {
+  const pays = DB.paiements.filter(p=>p.proprietaireId===currentUser.proprietaireId).reverse();
+  return `
+  <div class="section-heading">Historique des paiements</div>
+  ${pays.length === 0 ? '<div class="empty-state"><div class="empty-state-icon">📋</div><div class="empty-state-text">Aucun paiement enregistré.</div></div>' :
+  `<div class="card">
+    ${pays.map(p => {
+      const act = DB.activites.find(a=>a.id===p.activiteId);
+      return `<div class="list-item">
+        <div class="list-icon ${p.statut==='valide'?'list-icon-green':p.statut==='en_attente'?'list-icon-amber':'list-icon-red'}">${act?.icone}</div>
+        <div class="list-info">
+          <div class="list-name">${act?.nom}</div>
+          <div class="list-detail">${new Date(p.date).toLocaleDateString('fr-FR')}${p.validePar?` · Validé par ${p.validePar}`:''}</div>
+          ${p.note ? `<div style="font-size:11px;color:var(--gray-500);font-style:italic;">"${p.note}"</div>` : ''}
+        </div>
+        <div class="list-right">
+          <div class="list-amount">${p.montant.toLocaleString()} F</div>
+          <div style="margin-top:4px;"><span class="chip ${p.statut==='valide'?'chip-validated':p.statut==='en_attente'?'chip-pending':'chip-rejected'}">${p.statut==='valide'?'✓ Validé':p.statut==='en_attente'?'⏳ En attente':'✗ Rejeté'}</span></div>
+        </div>
+      </div>`;
+    }).join('')}
+  </div>`}`;
+}
+
+function renderProfil() {
+  const prop = DB.proprietaires.find(p=>p.id===currentUser.proprietaireId);
+  if (!prop) return '';
+  const sect = DB.secteurs.find(s=>s.id===prop.secteur);
+  const pays = DB.paiements.filter(p=>p.proprietaireId===prop.id);
+  return `
+  <div class="section-heading">Mon profil</div>
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-body">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;">
+        <div class="avatar" style="width:56px;height:56px;font-size:20px;">${initiales(prop.nom)}</div>
+        <div>
+          <div style="font-size:20px;font-weight:600;font-family:var(--font-display);">${prop.nom}</div>
+          <div style="font-size:13px;color:var(--gray-500);">Propriétaire · Lot ${prop.lot}</div>
+        </div>
+      </div>
+      <div style="display:grid;gap:12px;">
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--gray-100);">
+          <span style="font-size:13px;color:var(--gray-500);">N° de lot</span>
+          <span style="font-size:13px;font-weight:600;">LOT ${prop.lot}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--gray-100);">
+          <span style="font-size:13px;color:var(--gray-500);">Îlot</span>
+          <span style="font-size:13px;font-weight:600;">Îlot ${prop.ilot}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--gray-100);">
+          <span style="font-size:13px;color:var(--gray-500);">Secteur</span>
+          <span style="font-size:13px;font-weight:600;">${sect?.nom}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--gray-100);">
+          <span style="font-size:13px;color:var(--gray-500);">Responsable secteur</span>
+          <span style="font-size:13px;font-weight:600;">${sect?.responsable}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--gray-100);">
+          <span style="font-size:13px;color:var(--gray-500);">Téléphone</span>
+          <span style="font-size:13px;font-weight:600;">${prop.tel}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;">
+          <span style="font-size:13px;color:var(--gray-500);">Email</span>
+          <span style="font-size:13px;font-weight:600;">${prop.email}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-label">Total payé</div><div class="stat-value">${(pays.filter(p=>p.statut==='valide').reduce((a,p)=>a+p.montant,0)/1000).toFixed(1)}k</div><div class="stat-sub">FCFA</div></div>
+    <div class="stat-card"><div class="stat-label">Paiements</div><div class="stat-value">${pays.length}</div><div class="stat-sub">total</div></div>
+  </div>
+  <button class="btn btn-danger" style="width:100%;justify-content:center;margin-top:8px;" onclick="doLogout()">Se déconnecter</button>`;
+}
+
+// ============================================================
+// ACTIONS
+// ============================================================
+function validerPaiement(id) {
+  const p = DB.paiements.find(pay=>pay.id===id);
+  if (p) { p.statut = 'valide'; p.validePar = currentUser.nom; }
+  showAlert('Paiement validé avec succès !');
+  renderPage(currentTab);
+}
+
+function rejeterPaiement(id) {
+  const p = DB.paiements.find(pay=>pay.id===id);
+  if (p) { p.statut = 'rejete'; p.validePar = currentUser.nom; }
+  showAlert('Paiement rejeté.', 'warning');
+  renderPage(currentTab);
+}
+
+// ============================================================
+// MODALS
+// ============================================================
+function openModalAjoutProprietaire() {
+  document.getElementById('modalBody').innerHTML = `
+    <div class="modal-title">Ajouter un propriétaire</div>
+    <div class="form-grid">
+      <div class="form-row">
+        <div class="form-group"><label>Nom complet</label><input type="text" id="fNom" placeholder="Prénom Nom"></div>
+        <div class="form-group"><label>Téléphone</label><input type="text" id="fTel" placeholder="07 XX XX XX"></div>
+      </div>
+      <div class="form-group"><label>Email</label><input type="email" id="fEmail" placeholder="email@exemple.ci"></div>
+      <div class="form-row">
+        <div class="form-group"><label>N° de lot</label><input type="text" id="fLot" placeholder="Ex: A05"></div>
+        <div class="form-group"><label>N° d'îlot</label><input type="text" id="fIlot" placeholder="Ex: 2"></div>
+      </div>
+      <div class="form-group"><label>Secteur</label>
+        <select id="fSect">${DB.secteurs.map(s=>`<option value="${s.id}">${s.nom}</option>`).join('')}</select>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal()">Annuler</button>
+      <button class="btn btn-primary" onclick="ajouterProprietaire()">Enregistrer</button>
+    </div>`;
+  document.getElementById('modalOverlay').style.display = 'flex';
+}
+
+function ajouterProprietaire() {
+  const nom = document.getElementById('fNom').value.trim();
+  const tel = document.getElementById('fTel').value.trim();
+  const email = document.getElementById('fEmail').value.trim();
+  const lot = document.getElementById('fLot').value.trim().toUpperCase();
+  const ilot = document.getElementById('fIlot').value.trim();
+  const secteur = document.getElementById('fSect').value;
+  if (!nom || !lot) { alert('Nom et lot obligatoires'); return; }
+  const id = 'P' + String(DB.proprietaires.length + 1).padStart(3,'0');
+  DB.proprietaires.push({ id, nom, tel, email, lot, ilot, secteur, statut:'actif' });
+  const s = DB.secteurs.find(sec=>sec.id===secteur);
+  if (s && !s.lots.includes(lot)) s.lots.push(lot);
+  closeModal();
+  showAlert(`${nom} ajouté(e) avec succès !`);
+  renderPage('proprietaires');
+}
+
+function openModalAjoutActivite() {
+  document.getElementById('modalBody').innerHTML = `
+    <div class="modal-title">Nouvelle activité</div>
+    <div class="form-grid">
+      <div class="form-group"><label>Nom de l'activité</label><input type="text" id="aNom" placeholder="Ex: Entretien piscine"></div>
+      <div class="form-row">
+        <div class="form-group"><label>Icône (emoji)</label><input type="text" id="aIcone" placeholder="🏊" maxlength="4"></div>
+        <div class="form-group"><label>Montant (FCFA)</label><input type="number" id="aMontant" placeholder="5000"></div>
+      </div>
+      <div class="form-group"><label>Périodicité</label>
+        <select id="aPeriode"><option>mensuel</option><option>trimestriel</option><option>semestriel</option><option>annuel</option></select>
+      </div>
+      <div class="form-group"><label>Description</label><textarea id="aDesc" placeholder="Description du service…"></textarea></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal()">Annuler</button>
+      <button class="btn btn-primary" onclick="ajouterActivite()">Créer</button>
+    </div>`;
+  document.getElementById('modalOverlay').style.display = 'flex';
+}
+
+function ajouterActivite() {
+  const nom = document.getElementById('aNom').value.trim();
+  const icone = document.getElementById('aIcone').value.trim() || '💼';
+  const montant = parseInt(document.getElementById('aMontant').value) || 0;
+  const periodicite = document.getElementById('aPeriode').value;
+  const description = document.getElementById('aDesc').value.trim();
+  if (!nom || !montant) { alert('Nom et montant obligatoires'); return; }
+  const id = 'ACT' + (DB.activites.length + 1);
+  DB.activites.push({ id, nom, icone, montant, periodicite, description });
+  closeModal();
+  showAlert(`Activité "${nom}" créée !`);
+  renderPage('activites');
+}
+
+function openModalEditActivite(id) {
+  const a = DB.activites.find(act=>act.id===id);
+  document.getElementById('modalBody').innerHTML = `
+    <div class="modal-title">Modifier : ${a.nom}</div>
+    <div class="form-grid">
+      <div class="form-row">
+        <div class="form-group"><label>Icône</label><input type="text" id="eIcone" value="${a.icone}"></div>
+        <div class="form-group"><label>Montant (FCFA)</label><input type="number" id="eMontant" value="${a.montant}"></div>
+      </div>
+      <div class="form-group"><label>Périodicité</label>
+        <select id="ePeriode">
+          ${['mensuel','trimestriel','semestriel','annuel'].map(p=>`<option ${p===a.periodicite?'selected':''}>${p}</option>`).join('')}
+        </select>
+      </div>
+      <div class="form-group"><label>Description</label><textarea id="eDesc">${a.description}</textarea></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal()">Annuler</button>
+      <button class="btn btn-primary" onclick="saveActivite('${id}')">Sauvegarder</button>
+    </div>`;
+  document.getElementById('modalOverlay').style.display = 'flex';
+}
+
+function saveActivite(id) {
+  const a = DB.activites.find(act=>act.id===id);
+  a.icone = document.getElementById('eIcone').value.trim() || a.icone;
+  a.montant = parseInt(document.getElementById('eMontant').value) || a.montant;
+  a.periodicite = document.getElementById('ePeriode').value;
+  a.description = document.getElementById('eDesc').value.trim();
+  closeModal();
+  showAlert('Activité mise à jour !');
+  renderPage('activites');
+}
+
+function openModalPaiement() { switchTab('payer'); }
+
+function viewActivite(id) {
+  const a = DB.activites.find(act=>act.id===id);
+  const pays = DB.paiements.filter(p=>p.activiteId===id&&p.statut==='valide');
+  document.getElementById('modalBody').innerHTML = `
+    <div class="modal-title">${a.icone} ${a.nom}</div>
+    <p style="font-size:13px;color:var(--gray-500);margin-bottom:16px;">${a.description}</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
+      <div class="stat-card"><div class="stat-label">Montant</div><div class="stat-value">${(a.montant/1000).toFixed(1)}k</div><div class="stat-sub">FCFA · ${a.periodicite}</div></div>
+      <div class="stat-card"><div class="stat-label">Encaissé</div><div class="stat-value">${(pays.reduce((s,p)=>s+p.montant,0)/1000).toFixed(0)}k</div><div class="stat-sub">FCFA validés</div></div>
+    </div>
+    <div class="modal-actions"><button class="btn btn-outline" onclick="closeModal()">Fermer</button></div>`;
+  document.getElementById('modalOverlay').style.display = 'flex';
+}
+
+function openModalAjoutSecteur() {
+  document.getElementById('modalBody').innerHTML = `
+    <div class="modal-title">Nouveau secteur</div>
+    <div class="form-grid">
+      <div class="form-group"><label>Nom du secteur</label><input type="text" id="sNom" placeholder="Ex: Secteur E — Centre"></div>
+      <div class="form-group"><label>Nom du responsable</label><input type="text" id="sResp" placeholder="Prénom Nom"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal()">Annuler</button>
+      <button class="btn btn-primary" onclick="ajouterSecteur()">Créer</button>
+    </div>`;
+  document.getElementById('modalOverlay').style.display = 'flex';
+}
+
+function ajouterSecteur() {
+  const nom = document.getElementById('sNom').value.trim();
+  const responsable = document.getElementById('sResp').value.trim();
+  if (!nom || !responsable) { alert('Champs obligatoires'); return; }
+  DB.secteurs.push({ id: 'S'+Date.now(), nom, responsable, lots: [] });
+  closeModal();
+  showAlert('Secteur créé !');
+  renderPage('secteurs');
+}
+
+function closeModal(e) {
+  if (e && e.target !== document.getElementById('modalOverlay')) return;
+  document.getElementById('modalOverlay').style.display = 'none';
+}
+
+// Allow pressing Enter to login
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.getElementById('loginPage').style.display !== 'none') doLogin();
+});
+</script>
+</body>
+</html>
