@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Proprietaire, Secteur, Paiement, Activite } from '@/types/database';
-import { X, User, Phone, Mail, MapPin, CheckCircle2, Clock, AlertTriangle } from 'lucide-react';
+import { X, User, Phone, Mail, MapPin, CheckCircle2, Clock, AlertTriangle, FileText, Printer } from 'lucide-react';
 
 interface ViewProprietaireModalProps {
   isOpen: boolean;
@@ -11,6 +11,7 @@ interface ViewProprietaireModalProps {
   secteurs: Secteur[];
   paiements: Paiement[];
   activites: Activite[];
+  onGenerateReleve?: (prop: Proprietaire) => void;
 }
 
 export const ViewProprietaireModal: React.FC<ViewProprietaireModalProps> = ({
@@ -20,6 +21,7 @@ export const ViewProprietaireModal: React.FC<ViewProprietaireModalProps> = ({
   secteurs,
   paiements,
   activites,
+  onGenerateReleve,
 }) => {
   if (!isOpen || !proprietaire) return null;
 
@@ -132,10 +134,22 @@ export const ViewProprietaireModal: React.FC<ViewProprietaireModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="p-4 bg-gray-50 border-t border-gray-100 flex justify-end">
+        <div className="p-4 bg-gray-50 border-t border-gray-100 flex items-center justify-between">
+          {onGenerateReleve ? (
+            <button
+              onClick={() => {
+                onClose();
+                onGenerateReleve(proprietaire);
+              }}
+              className="px-4 py-2 bg-forest-800 text-white text-xs font-semibold rounded-xl hover:bg-forest-900 flex items-center gap-2 shadow-sm transition-all"
+            >
+              <FileText className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Imprimer Relevé des Paiements (PDF)</span>
+            </button>
+          ) : <div />}
           <button
             onClick={onClose}
-            className="px-4 py-2 bg-gray-800 text-white text-xs font-medium rounded-xl hover:bg-gray-900"
+            className="px-4 py-2 bg-gray-200 text-gray-800 text-xs font-medium rounded-xl hover:bg-gray-300"
           >
             Fermer
           </button>

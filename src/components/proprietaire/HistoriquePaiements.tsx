@@ -9,6 +9,7 @@ interface HistoriquePaiementsProps {
   proprietaires: Proprietaire[];
   activites: Activite[];
   paiements: Paiement[];
+  onNavigate?: (tab: string) => void;
 }
 
 export const HistoriquePaiements: React.FC<HistoriquePaiementsProps> = ({
@@ -16,6 +17,7 @@ export const HistoriquePaiements: React.FC<HistoriquePaiementsProps> = ({
   proprietaires,
   activites,
   paiements,
+  onNavigate,
 }) => {
   const currentProp = proprietaires.find((p) => p.id === currentUser.proprietaire_id) || proprietaires[0];
   const myPaiements = paiements
@@ -24,13 +26,25 @@ export const HistoriquePaiements: React.FC<HistoriquePaiementsProps> = ({
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="font-serif text-2xl font-bold text-gray-900">
-          Historique de Mes Règlements
-        </h1>
-        <p className="text-xs sm:text-sm text-gray-500 mt-1">
-          Toutes les quittances et statuts de cotisations pour le Lot {currentProp?.lot}
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="font-serif text-2xl font-bold text-gray-900">
+            Historique de Mes Règlements
+          </h1>
+          <p className="text-xs sm:text-sm text-gray-500 mt-1">
+            Toutes les quittances et statuts de cotisations pour le Lot {currentProp?.lot}
+          </p>
+        </div>
+
+        {onNavigate && (
+          <button
+            onClick={() => onNavigate('rapports')}
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-forest-800 hover:bg-forest-900 text-white text-xs font-semibold shadow-md transition-all self-start sm:self-auto cursor-pointer"
+          >
+            <FileText className="w-4 h-4 text-emerald-400" />
+            <span>Imprimer Relevé Officiel (PDF)</span>
+          </button>
+        )}
       </div>
 
       <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">

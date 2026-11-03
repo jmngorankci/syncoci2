@@ -2,13 +2,16 @@
 
 import React from 'react';
 import { Secteur, Proprietaire, Paiement, CurrentUser } from '@/types/database';
-import { MapPin, Phone, Mail, CheckCircle2, Clock } from 'lucide-react';
+import { MapPin, Phone, Mail, CheckCircle2, Clock, Edit2, Trash2, UserPlus } from 'lucide-react';
 
 interface MonSecteurViewProps {
   currentUser: CurrentUser;
   secteurs: Secteur[];
   proprietaires: Proprietaire[];
   paiements: Paiement[];
+  onEditProprietaire: (prop: Proprietaire) => void;
+  onDeleteProprietaire: (prop: Proprietaire) => void;
+  onOpenAddProprietaire: () => void;
 }
 
 export const MonSecteurView: React.FC<MonSecteurViewProps> = ({
@@ -16,6 +19,9 @@ export const MonSecteurView: React.FC<MonSecteurViewProps> = ({
   secteurs,
   proprietaires,
   paiements,
+  onEditProprietaire,
+  onDeleteProprietaire,
+  onOpenAddProprietaire,
 }) => {
   const currentSecteur = secteurs.find((s) => s.id === currentUser.secteur_id) || secteurs[0];
   const sectProps = proprietaires.filter((p) => p.secteur_id === currentSecteur?.id);
@@ -23,13 +29,23 @@ export const MonSecteurView: React.FC<MonSecteurViewProps> = ({
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="font-serif text-2xl font-bold text-gray-900">
-          Copropriétaires de Mon Secteur
-        </h1>
-        <p className="text-xs sm:text-sm text-gray-500 mt-1">
-          {currentSecteur?.nom} — Supervision de {sectProps.length} résidents
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="font-serif text-2xl font-bold text-gray-900">
+            Copropriétaires de Mon Secteur
+          </h1>
+          <p className="text-xs sm:text-sm text-gray-500 mt-1">
+            {currentSecteur?.nom} — Supervision de {sectProps.length} résidents
+          </p>
+        </div>
+
+        <button
+          onClick={onOpenAddProprietaire}
+          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-forest-700 hover:bg-forest-800 text-white text-xs sm:text-sm font-semibold shadow-md transition-all self-start sm:self-auto"
+        >
+          <UserPlus className="w-4 h-4" />
+          <span>Ajouter un copropriétaire</span>
+        </button>
       </div>
 
       {/* Grid of Resident Cards */}
@@ -56,9 +72,25 @@ export const MonSecteurView: React.FC<MonSecteurViewProps> = ({
                   </div>
                 </div>
 
-                <span className="px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-800 font-mono font-bold text-xs border border-emerald-200">
-                  LOT {p.lot}
-                </span>
+                <div className="flex items-center gap-1.5">
+                  <span className="px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-800 font-mono font-bold text-xs border border-emerald-200">
+                    LOT {p.lot}
+                  </span>
+                  <button
+                    onClick={() => onEditProprietaire(p)}
+                    title="Modifier ce copropriétaire"
+                    className="p-1.5 rounded-lg border border-gray-200 hover:bg-emerald-50 hover:border-emerald-300 text-gray-600 hover:text-emerald-800 transition-colors"
+                  >
+                    <Edit2 className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    onClick={() => onDeleteProprietaire(p)}
+                    title="Supprimer ce copropriétaire"
+                    className="p-1.5 rounded-lg border border-gray-200 hover:bg-red-50 hover:border-red-300 text-gray-600 hover:text-red-700 transition-colors"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
               </div>
 
               <div className="text-xs space-y-1 text-gray-600 border-y border-gray-50 py-3">

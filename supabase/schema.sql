@@ -55,6 +55,38 @@ CREATE TABLE IF NOT EXISTS public.paiements (
     updated_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
+-- 5b. TABLE DES RUBRIQUES DE DÉPENSES
+CREATE TABLE IF NOT EXISTS public.rubriques_depenses (
+    id TEXT PRIMARY KEY,
+    nom TEXT NOT NULL,
+    icone TEXT DEFAULT '📋',
+    famille TEXT NOT NULL DEFAULT 'exploitation' CHECK (famille IN ('exploitation', 'maintenance', 'administration', 'social', 'investissement')),
+    budget_mensuel NUMERIC(12, 2) NOT NULL DEFAULT 0,
+    statut TEXT NOT NULL DEFAULT 'actif' CHECK (statut IN ('actif', 'inactif')),
+    description TEXT,
+    created_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- 5c. TABLE DES DÉPENSES (SORTIES DE CAISSE)
+CREATE TABLE IF NOT EXISTS public.depenses (
+    id TEXT PRIMARY KEY,
+    rubrique_id TEXT NOT NULL REFERENCES public.rubriques_depenses(id) ON DELETE RESTRICT,
+    activite_id TEXT REFERENCES public.activites(id) ON DELETE SET NULL,
+    secteur_id TEXT REFERENCES public.secteurs(id) ON DELETE SET NULL,
+    libelle TEXT NOT NULL,
+    montant NUMERIC(12, 2) NOT NULL CHECK (montant > 0),
+    date DATE NOT NULL DEFAULT CURRENT_DATE,
+    beneficiaire TEXT,
+    mode_paiement TEXT DEFAULT 'Espèces (Caisse)',
+    reference_piece TEXT,
+    statut TEXT NOT NULL DEFAULT 'en_attente' CHECK (statut IN ('en_attente', 'valide', 'rejete')),
+    enregistre_par TEXT,
+    valide_par TEXT,
+    note TEXT,
+    created_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL,
+    updated_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
 -- 6. TABLE DES PROFILS UTILISATEURS (reliée à Supabase Auth)
 CREATE TABLE IF NOT EXISTS public.profiles (
     id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -81,11 +113,18 @@ CREATE TRIGGER on_paiements_updated
     BEFORE UPDATE ON public.paiements
     FOR EACH ROW EXECUTE PROCEDURE public.handle_updated_at();
 
+DROP TRIGGER IF EXISTS on_depenses_updated ON public.depenses;
+CREATE TRIGGER on_depenses_updated
+    BEFORE UPDATE ON public.depenses
+    FOR EACH ROW EXECUTE PROCEDURE public.handle_updated_at();
+
 -- 8. SECURITE ROW LEVEL SECURITY (RLS)
 ALTER TABLE public.secteurs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.proprietaires ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.activites ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.paiements ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.rubriques_depenses ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.depenses ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 
 -- Politiques ouvertes pour l'utilisation syndic avec clé anonyme / authentifiée
@@ -101,9 +140,16 @@ CREATE POLICY "Gestion des activites" ON public.activites FOR ALL USING (true);
 CREATE POLICY "Lecture des paiements" ON public.paiements FOR SELECT USING (true);
 CREATE POLICY "Creation de paiements" ON public.paiements FOR INSERT WITH CHECK (true);
 CREATE POLICY "Modification et validation de paiements" ON public.paiements FOR UPDATE USING (true);
+CREATE POLICY "Suppression des paiements" ON public.paiements FOR DELETE USING (true);
 
 CREATE POLICY "Lecture des profils" ON public.profiles FOR SELECT USING (true);
 CREATE POLICY "Gestion des profils" ON public.profiles FOR ALL USING (true);
+
+CREATE POLICY "Lecture des rubriques_depenses" ON public.rubriques_depenses FOR SELECT USING (true);
+CREATE POLICY "Gestion des rubriques_depenses" ON public.rubriques_depenses FOR ALL USING (true);
+
+CREATE POLICY "Lecture des depenses" ON public.depenses FOR SELECT USING (true);
+CREATE POLICY "Gestion des depenses" ON public.depenses FOR ALL USING (true);
 
 -- ============================================================
 -- 9. JEU DE DONNÉES INITIAL (SEED DATA)

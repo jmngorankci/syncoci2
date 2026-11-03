@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Secteur, Proprietaire, Paiement, Activite } from '@/types/database';
-import { MapPin, User, Plus, Home, Shield, CheckCircle2 } from 'lucide-react';
+import { MapPin, User, Plus, Home, Shield, CheckCircle2, Edit2, Trash2 } from 'lucide-react';
 
 interface SecteursListProps {
   secteurs: Secteur[];
@@ -10,6 +10,8 @@ interface SecteursListProps {
   paiements: Paiement[];
   activites: Activite[];
   onOpenAddModal: () => void;
+  onEditSecteur: (secteur: Secteur) => void;
+  onDeleteSecteur: (secteur: Secteur) => void;
 }
 
 export const SecteursList: React.FC<SecteursListProps> = ({
@@ -18,6 +20,8 @@ export const SecteursList: React.FC<SecteursListProps> = ({
   paiements,
   activites,
   onOpenAddModal,
+  onEditSecteur,
+  onDeleteSecteur,
 }) => {
   return (
     <div className="space-y-6">
@@ -71,9 +75,25 @@ export const SecteursList: React.FC<SecteursListProps> = ({
                   </div>
                 </div>
 
-                <span className="px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 font-bold text-xs">
-                  {sectProps.length} lots
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 font-bold text-xs">
+                    {sectProps.length} lots
+                  </span>
+                  <button
+                    onClick={() => onEditSecteur(s)}
+                    title="Modifier ce secteur"
+                    className="p-1.5 rounded-lg border border-gray-200 hover:bg-emerald-50 hover:border-emerald-300 text-gray-700 hover:text-emerald-800 transition-colors"
+                  >
+                    <Edit2 className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    onClick={() => onDeleteSecteur(s)}
+                    title="Supprimer ce secteur"
+                    className="p-1.5 rounded-lg border border-gray-200 hover:bg-red-50 hover:border-red-300 text-gray-700 hover:text-red-700 transition-colors"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
               </div>
 
               {/* Financial Snapshot */}

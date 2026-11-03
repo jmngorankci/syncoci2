@@ -1,13 +1,13 @@
 'use client';
 
 import React from 'react';
-import { Secteur, Proprietaire, Activite, Paiement } from '@/types/database';
+import { Secteur, Proprietaire, Activite, Paiement, Depense } from '@/types/database';
 import { 
   Users, 
   Wallet, 
   Clock, 
-  Layers, 
   ArrowUpRight, 
+  ArrowDownCircle,
   CheckCircle2, 
   AlertTriangle,
   TrendingUp,
@@ -20,6 +20,7 @@ interface AdminDashboardProps {
   proprietaires: Proprietaire[];
   activites: Activite[];
   paiements: Paiement[];
+  depenses?: Depense[];
   onNavigate: (tab: string) => void;
   onValidatePayment: (id: string) => void;
   onRejectPayment: (id: string) => void;
@@ -30,6 +31,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   proprietaires,
   activites,
   paiements,
+  depenses = [],
   onNavigate,
   onValidatePayment,
   onRejectPayment,
@@ -37,6 +39,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const totalEncaissed = paiements
     .filter((p) => p.statut === 'valide')
     .reduce((sum, p) => sum + Number(p.montant), 0);
+
+  const totalDepensesValidees = depenses
+    .filter((d) => d.statut === 'valide')
+    .reduce((sum, d) => sum + Number(d.montant), 0);
+
+  const soldeNetCaisse = totalEncaissed - totalDepensesValidees;
+  const pendingDepenses = depenses.filter((d) => d.statut === 'en_attente');
+  const pendingDepensesAmount = pendingDepenses.reduce((sum, d) => sum + Number(d.montant), 0);
 
   const pendingPaiements = paiements.filter((p) => p.statut === 'en_attente');
   const pendingAmount = pendingPaiements.reduce((sum, p) => sum + Number(p.montant), 0);
@@ -68,7 +78,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </p>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                onClick={() => onNavigate('depenses')}
+                className="px-4 py-2.5 rounded-xl bg-white/15 hover:bg-white/25 border border-white/20 text-white text-xs font-bold transition-all shadow-sm flex items-center gap-1.5"
+              >
+                <span>Dépenses & Caisse</span>
+                <ArrowDownCircle className="w-4 h-4 text-rose-300" />
+              </button>
               <button
                 onClick={() => onNavigate('paiements')}
                 className="px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-forest-950 text-xs font-bold transition-all shadow-md flex items-center gap-1.5"
@@ -84,12 +101,35 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         <div className="absolute right-0 top-0 -mt-8 -mr-8 w-64 h-64 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
       </div>
 
+      {/* Pending expenses submitted by Responsables alert */}
+      {pendingDepenses.length > 0 && (
+        <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm">
+          <div className="flex items-center gap-3 text-amber-950 text-xs sm:text-sm">
+            <div className="w-9 h-9 rounded-xl bg-amber-200/70 text-amber-800 flex items-center justify-center shrink-0">
+              <Clock className="w-5 h-5" />
+            </div>
+            <div>
+              <span className="font-bold">
+                {pendingDepenses.length} dépense(s) soumise(s) par les Responsables en attente de validation
+              </span>{' '}
+              — Cumul : <strong>{pendingDepensesAmount.toLocaleString('fr-FR')} FCFA</strong>
+            </div>
+          </div>
+          <button
+            onClick={() => onNavigate('depenses')}
+            className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold shadow-sm transition-colors self-start sm:self-auto"
+          >
+            Examiner & Valider
+          </button>
+        </div>
+      )}
+
       {/* KPI Stats Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Total Encaissé */}
         <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-gray-500">Total Encaissé</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-gray-500">Total Entrées</span>
             <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center">
               <Wallet className="w-5 h-5" />
             </div>
@@ -103,7 +143,45 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           </div>
         </div>
 
-        {/* En Attente */}
+        {/* Total Sorties */}
+        <div
+          onClick={() => onNavigate('depenses')}
+          className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+        >
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold uppercase tracking-wider text-gray-500">Total Sorties</span>
+            <div className="w-9 h-9 rounded-xl bg-rose-50 text-rose-700 flex items-center justify-center">
+              <ArrowDownCircle className="w-5 h-5" />
+            </div>
+          </div>
+          <div className="mt-3 font-serif text-2xl sm:text-3xl font-bold text-rose-700">
+            {totalDepensesValidees.toLocaleString('fr-FR')} <span className="text-sm font-sans font-normal text-gray-500">FCFA</span>
+          </div>
+          <div className="mt-2 text-xs text-gray-500">
+            {depenses.filter((d) => d.statut === 'valide').length} dépense(s) validée(s)
+          </div>
+        </div>
+
+        {/* Solde Net en Caisse */}
+        <div
+          onClick={() => onNavigate('depenses')}
+          className="bg-gradient-to-br from-[#0d2b1a] to-[#1e4b32] text-white rounded-2xl p-5 border border-forest-800 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+        >
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold uppercase tracking-wider text-emerald-200">Solde en Caisse</span>
+            <div className="w-9 h-9 rounded-xl bg-white/10 text-emerald-300 flex items-center justify-center">
+              <Wallet className="w-5 h-5" />
+            </div>
+          </div>
+          <div className="mt-3 font-serif text-2xl sm:text-3xl font-bold text-white">
+            {soldeNetCaisse.toLocaleString('fr-FR')} <span className="text-sm font-sans font-normal text-emerald-200">FCFA</span>
+          </div>
+          <div className="mt-2 text-xs text-emerald-300">
+            Trésorerie nette disponible
+          </div>
+        </div>
+
+        {/* En Attente & Propriétaires */}
         <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-gray-500">En attente</span>
@@ -112,42 +190,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
           </div>
           <div className="mt-3 font-serif text-2xl sm:text-3xl font-bold text-amber-600">
-            {pendingPaiements.length} <span className="text-sm font-sans font-normal text-gray-500">paiements</span>
+            {pendingPaiements.length} <span className="text-sm font-sans font-normal text-gray-500">entrées</span>
           </div>
           <div className="mt-2 text-xs text-gray-500">
-            Montant : {pendingAmount.toLocaleString('fr-FR')} FCFA
-          </div>
-        </div>
-
-        {/* Copropriétaires */}
-        <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-gray-500">Propriétaires</span>
-            <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center">
-              <Users className="w-5 h-5" />
-            </div>
-          </div>
-          <div className="mt-3 font-serif text-2xl sm:text-3xl font-bold text-gray-900">
-            {proprietaires.length} <span className="text-sm font-sans font-normal text-gray-500">lots</span>
-          </div>
-          <div className="mt-2 text-xs text-gray-500">
-            Répartis sur {secteurs.length} secteurs
-          </div>
-        </div>
-
-        {/* Activités */}
-        <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-gray-500">Services & Cotisations</span>
-            <div className="w-9 h-9 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center">
-              <Layers className="w-5 h-5" />
-            </div>
-          </div>
-          <div className="mt-3 font-serif text-2xl sm:text-3xl font-bold text-gray-900">
-            {activites.length} <span className="text-sm font-sans font-normal text-gray-500">activités</span>
-          </div>
-          <div className="mt-2 text-xs text-gray-500">
-            Gardiennage, Voirie, Déchets...
+            {proprietaires.length} lots · {pendingDepenses.length} sortie(s) en attente
           </div>
         </div>
       </div>

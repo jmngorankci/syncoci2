@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Secteur, Proprietaire, Activite, Paiement, CurrentUser } from '@/types/database';
-import { CheckCircle2, Check, X, Clock, FileText, AlertCircle } from 'lucide-react';
+import { CheckCircle2, Check, X, Clock, FileText, AlertCircle, Edit2, Trash2 } from 'lucide-react';
 
 interface ValidationsViewProps {
   currentUser: CurrentUser;
@@ -12,6 +12,8 @@ interface ValidationsViewProps {
   paiements: Paiement[];
   onValidatePayment: (id: string) => void;
   onRejectPayment: (id: string) => void;
+  onEditPaiement: (paiement: Paiement) => void;
+  onDeletePaiement: (paiement: Paiement) => void;
 }
 
 export const ValidationsView: React.FC<ValidationsViewProps> = ({
@@ -22,6 +24,8 @@ export const ValidationsView: React.FC<ValidationsViewProps> = ({
   paiements,
   onValidatePayment,
   onRejectPayment,
+  onEditPaiement,
+  onDeletePaiement,
 }) => {
   const currentSecteur = secteurs.find((s) => s.id === currentUser.secteur_id) || secteurs[0];
   const sectPropsIds = proprietaires
@@ -106,13 +110,27 @@ export const ValidationsView: React.FC<ValidationsViewProps> = ({
                 </div>
 
                 {/* Actions */}
-                <div className="flex justify-end gap-2 pt-1">
+                <div className="flex flex-wrap items-center justify-end gap-2 pt-1">
+                  <button
+                    onClick={() => onEditPaiement(p)}
+                    className="px-3.5 py-2 border border-gray-200 hover:bg-gray-100 text-gray-700 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors"
+                  >
+                    <Edit2 className="w-3.5 h-3.5" />
+                    <span>Modifier</span>
+                  </button>
+                  <button
+                    onClick={() => onDeletePaiement(p)}
+                    className="px-3.5 py-2 border border-red-200 bg-red-50 hover:bg-red-100 text-red-700 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>Supprimer</span>
+                  </button>
                   <button
                     onClick={() => onRejectPayment(p.id)}
-                    className="px-4 py-2 bg-red-50 hover:bg-red-100 text-red-700 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors"
+                    className="px-3.5 py-2 bg-amber-100 hover:bg-amber-200 text-amber-900 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors"
                   >
-                    <X className="w-4 h-4" />
-                    <span>Rejeter le paiement</span>
+                    <X className="w-3.5 h-3.5" />
+                    <span>Rejeter</span>
                   </button>
                   <button
                     onClick={() => onValidatePayment(p.id)}

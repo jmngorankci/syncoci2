@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Paiement, Proprietaire, Activite, PaiementStatut } from '@/types/database';
-import { Search, CheckCircle2, AlertTriangle, Filter, Check, X, Clock, FileText } from 'lucide-react';
+import { Search, CheckCircle2, AlertTriangle, Filter, Check, X, Clock, FileText, Edit2, Trash2 } from 'lucide-react';
 
 interface PaiementsListProps {
   paiements: Paiement[];
@@ -10,6 +10,8 @@ interface PaiementsListProps {
   activites: Activite[];
   onValidatePayment: (id: string) => void;
   onRejectPayment: (id: string) => void;
+  onEditPaiement: (paiement: Paiement) => void;
+  onDeletePaiement: (paiement: Paiement) => void;
 }
 
 export const PaiementsList: React.FC<PaiementsListProps> = ({
@@ -18,6 +20,8 @@ export const PaiementsList: React.FC<PaiementsListProps> = ({
   activites,
   onValidatePayment,
   onRejectPayment,
+  onEditPaiement,
+  onDeletePaiement,
 }) => {
   const [filterStatut, setFilterStatut] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -222,26 +226,42 @@ export const PaiementsList: React.FC<PaiementsListProps> = ({
 
                       {/* Action */}
                       <td className="py-3.5 px-4 text-right">
-                        {p.statut === 'en_attente' ? (
-                          <div className="flex items-center justify-end gap-1.5">
-                            <button
-                              onClick={() => onValidatePayment(p.id)}
-                              className="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold flex items-center gap-1 shadow-sm transition-colors"
-                            >
-                              <Check className="w-3.5 h-3.5" />
-                              <span>Valider</span>
-                            </button>
-                            <button
-                              onClick={() => onRejectPayment(p.id)}
-                              className="px-2.5 py-1.5 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg text-xs font-semibold flex items-center gap-1 transition-colors"
-                            >
-                              <X className="w-3.5 h-3.5" />
-                              <span>Rejeter</span>
-                            </button>
-                          </div>
-                        ) : (
-                          <span className="text-xs text-gray-400 font-mono">—</span>
-                        )}
+                        <div className="flex items-center justify-end gap-1.5">
+                          {p.statut === 'en_attente' && (
+                            <>
+                              <button
+                                onClick={() => onValidatePayment(p.id)}
+                                title="Valider ce paiement"
+                                className="px-2 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold flex items-center gap-1 shadow-sm transition-colors"
+                              >
+                                <Check className="w-3.5 h-3.5" />
+                                <span className="hidden lg:inline">Valider</span>
+                              </button>
+                              <button
+                                onClick={() => onRejectPayment(p.id)}
+                                title="Rejeter ce paiement"
+                                className="px-2 py-1 bg-amber-100 hover:bg-amber-200 text-amber-900 rounded-lg text-xs font-semibold flex items-center gap-1 transition-colors"
+                              >
+                                <X className="w-3.5 h-3.5" />
+                                <span className="hidden lg:inline">Rejeter</span>
+                              </button>
+                            </>
+                          )}
+                          <button
+                            onClick={() => onEditPaiement(p)}
+                            title="Modifier ce paiement"
+                            className="p-1.5 rounded-lg border border-gray-200 hover:bg-emerald-50 hover:border-emerald-300 text-gray-700 hover:text-emerald-800 transition-colors"
+                          >
+                            <Edit2 className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            onClick={() => onDeletePaiement(p)}
+                            title="Supprimer ce paiement"
+                            className="p-1.5 rounded-lg border border-red-200 bg-red-50/60 hover:bg-red-100 text-red-700 transition-colors"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   );

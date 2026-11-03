@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Proprietaire, Secteur, Paiement } from '@/types/database';
-import { Search, Plus, UserPlus, Phone, Mail, Eye, Home } from 'lucide-react';
+import { Search, Plus, UserPlus, Phone, Mail, Eye, Home, Edit2, Trash2, FileText } from 'lucide-react';
 
 interface ProprietairesListProps {
   proprietaires: Proprietaire[];
@@ -10,6 +10,9 @@ interface ProprietairesListProps {
   paiements: Paiement[];
   onOpenAddModal: () => void;
   onViewProprietaire: (prop: Proprietaire) => void;
+  onEditProprietaire: (prop: Proprietaire) => void;
+  onDeleteProprietaire: (prop: Proprietaire) => void;
+  onGenerateReleve?: (prop: Proprietaire) => void;
 }
 
 export const ProprietairesList: React.FC<ProprietairesListProps> = ({
@@ -18,6 +21,9 @@ export const ProprietairesList: React.FC<ProprietairesListProps> = ({
   paiements,
   onOpenAddModal,
   onViewProprietaire,
+  onEditProprietaire,
+  onDeleteProprietaire,
+  onGenerateReleve,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSecteur, setSelectedSecteur] = useState<string>('all');
@@ -172,13 +178,42 @@ export const ProprietairesList: React.FC<ProprietairesListProps> = ({
                       </td>
 
                       <td className="py-3.5 px-4 text-right">
-                        <button
-                          onClick={() => onViewProprietaire(p)}
-                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-gray-200 hover:bg-forest-50 hover:border-forest-300 text-forest-800 text-xs font-medium transition-colors"
-                        >
-                          <Eye className="w-3.5 h-3.5" />
-                          <span>Fiche</span>
-                        </button>
+                        <div className="flex items-center justify-end gap-1.5">
+                          {onGenerateReleve && (
+                            <button
+                              onClick={() => onGenerateReleve(p)}
+                              title="Imprimer l'état des paiements (PDF)"
+                              className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-purple-200 bg-purple-50/70 hover:bg-purple-100 text-purple-900 text-xs font-medium transition-colors"
+                            >
+                              <FileText className="w-3.5 h-3.5 text-purple-700" />
+                              <span className="hidden sm:inline">Relevé PDF</span>
+                            </button>
+                          )}
+                          <button
+                            onClick={() => onViewProprietaire(p)}
+                            title="Voir la fiche détaillée"
+                            className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-gray-200 hover:bg-forest-50 hover:border-forest-300 text-forest-800 text-xs font-medium transition-colors"
+                          >
+                            <Eye className="w-3.5 h-3.5" />
+                            <span className="hidden sm:inline">Fiche</span>
+                          </button>
+                          <button
+                            onClick={() => onEditProprietaire(p)}
+                            title="Modifier ce propriétaire"
+                            className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-emerald-200 bg-emerald-50/60 hover:bg-emerald-100 text-emerald-800 text-xs font-medium transition-colors"
+                          >
+                            <Edit2 className="w-3.5 h-3.5" />
+                            <span className="hidden sm:inline">Modifier</span>
+                          </button>
+                          <button
+                            onClick={() => onDeleteProprietaire(p)}
+                            title="Supprimer ce propriétaire"
+                            className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-red-200 bg-red-50/60 hover:bg-red-100 text-red-700 text-xs font-medium transition-colors"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                            <span className="hidden sm:inline">Supprimer</span>
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   );

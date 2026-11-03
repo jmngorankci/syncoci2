@@ -4,6 +4,15 @@ export type PaiementStatut = 'en_attente' | 'valide' | 'rejete';
 
 export type Periodicite = 'mensuel' | 'trimestriel' | 'semestriel' | 'annuel' | 'ponctuel';
 
+export type FamilleRubrique =
+  | 'exploitation'
+  | 'maintenance'
+  | 'administration'
+  | 'social'
+  | 'investissement';
+
+export type DepenseStatut = 'en_attente' | 'valide' | 'rejete';
+
 export interface Secteur {
   id: string;
   nom: string;
@@ -44,6 +53,36 @@ export interface Paiement {
   valide_par?: string | null;
   mode_paiement?: string;
   reference?: string;
+  note?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface RubriqueDepense {
+  id: string;
+  nom: string;
+  icone: string;
+  famille: FamilleRubrique;
+  budget_mensuel: number;
+  statut: 'actif' | 'inactif';
+  description: string;
+  created_at?: string;
+}
+
+export interface Depense {
+  id: string;
+  rubrique_id: string;
+  activite_id?: string | null;
+  secteur_id?: string | null;
+  libelle: string;
+  montant: number;
+  date: string;
+  beneficiaire?: string;
+  mode_paiement?: string;
+  reference_piece?: string;
+  statut: DepenseStatut;
+  enregistre_par?: string | null;
+  valide_par?: string | null;
   note?: string;
   created_at?: string;
   updated_at?: string;

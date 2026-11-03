@@ -14,6 +14,7 @@ interface AuthContextType {
   logout: () => void;
   switchRole: (role: UserRole) => void;
   selectDemoProfile: (profile: CurrentUser) => void;
+  updateCurrentUser: (data: Partial<CurrentUser>) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -128,6 +129,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem('syndic_auth_user', JSON.stringify(profile));
   };
 
+  const updateCurrentUser = (data: Partial<CurrentUser>) => {
+    if (!user) return;
+    const updated: CurrentUser = {
+      ...user,
+      ...data,
+      initiales: (data.nom || user.nom)
+        .split(' ')
+        .map((n) => n[0])
+        .join('')
+        .slice(0, 2)
+        .toUpperCase(),
+    };
+    setUser(updated);
+    localStorage.setItem('syndic_auth_user', JSON.stringify(updated));
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -139,6 +156,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         logout,
         switchRole,
         selectDemoProfile,
+        updateCurrentUser,
       }}
     >
       {children}

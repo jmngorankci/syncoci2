@@ -23,7 +23,7 @@ interface LoginScreenProps {
 export const LoginScreen: React.FC<LoginScreenProps> = ({ onOpenSupabaseConfig }) => {
   const { login, isSupabaseLive, selectDemoProfile } = useAuth();
   const [selectedRole, setSelectedRole] = useState<UserRole>('proprietaire');
-  const [identifier, setIdentifier] = useState('A01');
+  const [identifier, setIdentifier] = useState('Lot 1');
   const [password, setPassword] = useState('demo1234');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -32,8 +32,8 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onOpenSupabaseConfig }
     setSelectedRole(role);
     setError(null);
     if (role === 'admin') setIdentifier('admin');
-    else if (role === 'responsable') setIdentifier('Kofi');
-    else setIdentifier('A01');
+    else if (role === 'responsable') setIdentifier('Secteur 1');
+    else setIdentifier('Lot 1');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -54,10 +54,10 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onOpenSupabaseConfig }
 
   const demoAccounts = [
     { label: 'Admin (Syndic)', role: 'admin' as UserRole, id: 'admin', icon: '⚙️', sub: 'Tous les droits' },
-    { label: 'Kofi Asante (Resp. A)', role: 'responsable' as UserRole, id: 'Kofi', icon: '👤', sub: 'Secteur A — Nord' },
-    { label: 'Fatou Diallo (Resp. B)', role: 'responsable' as UserRole, id: 'Fatou', icon: '👤', sub: 'Secteur B — Sud' },
-    { label: 'Kouamé Brou (Lot A01)', role: 'proprietaire' as UserRole, id: 'A01', icon: '🏠', sub: 'Propriétaire' },
-    { label: 'Marie-Claire (Lot A02)', role: 'proprietaire' as UserRole, id: 'A02', icon: '🏠', sub: 'Propriétaire' },
+    { label: 'Resp. Secteur 1', role: 'responsable' as UserRole, id: 'Secteur 1', icon: '👤', sub: 'Îlots 1 à 5' },
+    { label: 'Resp. Secteur 2', role: 'responsable' as UserRole, id: 'Secteur 2', icon: '👤', sub: 'Îlots 8 à 11' },
+    { label: 'Dr BOKA BOKA (Lot 1)', role: 'proprietaire' as UserRole, id: 'Lot 1', icon: '🏠', sub: 'Îlot 1' },
+    { label: 'KOUADIO YAO (Lot 72)', role: 'proprietaire' as UserRole, id: 'Lot 72', icon: '🏠', sub: 'Îlot 12' },
   ];
 
   return (

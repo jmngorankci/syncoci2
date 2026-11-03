@@ -2,13 +2,14 @@
 
 import React from 'react';
 import { Activite, Paiement } from '@/types/database';
-import { Plus, Edit2, Layers, Calendar, CheckCircle2 } from 'lucide-react';
+import { Plus, Edit2, Layers, Calendar, CheckCircle2, Trash2 } from 'lucide-react';
 
 interface ActivitesListProps {
   activites: Activite[];
   paiements: Paiement[];
   onOpenAddModal: () => void;
   onOpenEditModal: (act: Activite) => void;
+  onDeleteActivite: (act: Activite) => void;
 }
 
 export const ActivitesList: React.FC<ActivitesListProps> = ({
@@ -16,6 +17,7 @@ export const ActivitesList: React.FC<ActivitesListProps> = ({
   paiements,
   onOpenAddModal,
   onOpenEditModal,
+  onDeleteActivite,
 }) => {
   return (
     <div className="space-y-6">
@@ -128,13 +130,24 @@ export const ActivitesList: React.FC<ActivitesListProps> = ({
                     </td>
 
                     <td className="py-3.5 px-4 text-right">
-                      <button
-                        onClick={() => onOpenEditModal(a)}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 hover:bg-forest-50 hover:border-forest-300 text-forest-800 text-xs font-medium transition-colors"
-                      >
-                        <Edit2 className="w-3.5 h-3.5" />
-                        <span>Modifier</span>
-                      </button>
+                      <div className="flex items-center justify-end gap-1.5">
+                        <button
+                          onClick={() => onOpenEditModal(a)}
+                          title="Modifier cette activité"
+                          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-gray-200 hover:bg-forest-50 hover:border-forest-300 text-forest-800 text-xs font-medium transition-colors"
+                        >
+                          <Edit2 className="w-3.5 h-3.5" />
+                          <span>Modifier</span>
+                        </button>
+                        <button
+                          onClick={() => onDeleteActivite(a)}
+                          title="Supprimer cette activité"
+                          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-red-200 bg-red-50/60 hover:bg-red-100 text-red-700 text-xs font-medium transition-colors"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                          <span>Supprimer</span>
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );
