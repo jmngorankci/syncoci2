@@ -156,8 +156,24 @@ export default function HomePage() {
     loadData();
   }, [loadData]);
 
-  // Reset current tab when role switches
+  // Reset current tab when role switches (or apply PWA shortcut ?tab=...)
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const tabParam = urlParams.get('tab');
+      if (tabParam) {
+        if (tabParam === 'depenses' && role === 'proprietaire') {
+          setCurrentTab('dashboard');
+          return;
+        }
+        if (tabParam === 'payer' && role !== 'proprietaire') {
+          setCurrentTab('paiements');
+          return;
+        }
+        setCurrentTab(tabParam);
+        return;
+      }
+    }
     setCurrentTab('dashboard');
   }, [role]);
 
@@ -464,31 +480,23 @@ export default function HomePage() {
 
   // Not logged in
   if (!user) {
-    return (
-      <>
-        <LoginScreen onOpenSupabaseConfig={() => setIsSupabaseModalOpen(true)} />
-        <SupabaseConfigModal
-          isOpen={isSupabaseModalOpen}
-          onClose={() => setIsSupabaseModalOpen(false)}
-        />
-      </>
-    );
+    return <LoginScreen />;
   }
 
   return (
     <div className="min-h-screen bg-[#f8faf9] flex flex-col font-sans">
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-top-4 duration-200">
-          <div className={`px-4 py-3 rounded-2xl shadow-xl border flex items-center gap-2.5 text-xs font-semibold ${
+        <div className="no-print fixed top-16 sm:top-20 left-3 right-3 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 z-50 animate-in fade-in slide-in-from-top-4 duration-200 flex justify-center">
+          <div className={`px-4 py-3 rounded-2xl shadow-xl border flex items-center gap-2.5 text-xs font-semibold max-w-md ${
             toastMessage.type === 'success'
               ? 'bg-emerald-900 text-emerald-100 border-emerald-600'
               : 'bg-amber-900 text-amber-100 border-amber-600'
           }`}>
             {toastMessage.type === 'success' ? (
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
             ) : (
-              <AlertTriangle className="w-4 h-4 text-amber-400" />
+              <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
             )}
             <span>{toastMessage.text}</span>
           </div>
@@ -499,11 +507,10 @@ export default function HomePage() {
       <Navbar
         currentTab={currentTab}
         onSelectTab={(tab) => setCurrentTab(tab)}
-        onOpenSupabaseConfig={() => setIsSupabaseModalOpen(true)}
       />
 
-      {/* Main Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      {/* Main Container (pb-24 on mobile for fixed bottom PWA navigation bar) */}
+      <main className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 pt-5 pb-24 md:py-8">
         {/* ADMIN VIEWS */}
         {role === 'admin' && (
           <>
@@ -846,7 +853,7 @@ export default function HomePage() {
               setIsDepenseModalOpen(true);
             }
           }}
-          className="no-print fixed bottom-6 right-6 w-14 h-14 rounded-full bg-forest-700 hover:bg-forest-800 text-white shadow-2xl flex items-center justify-center transition-all hover:scale-110 z-40"
+          className="no-print fixed bottom-20 md:bottom-6 right-4 md:right-6 w-12 h-12 md:w-14 md:h-14 rounded-full bg-forest-700 hover:bg-forest-800 text-white shadow-2xl flex items-center justify-center transition-all hover:scale-110 z-30"
           title="Ajouter"
         >
           <Plus className="w-6 h-6" />

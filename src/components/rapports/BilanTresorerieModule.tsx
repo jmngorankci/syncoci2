@@ -258,7 +258,7 @@ export const BilanTresorerieModule: React.FC<BilanTresorerieModuleProps> = ({
       {/* =================================================================== */}
       {/* PRINTABLE A4 DOCUMENT                                               */}
       {/* =================================================================== */}
-      <div className="print-document bg-white rounded-3xl border border-gray-200 shadow-lg p-6 sm:p-10 max-w-5xl mx-auto space-y-6 text-gray-900">
+      <div className="print-document bg-white rounded-3xl border border-gray-200 shadow-lg p-4 sm:p-10 max-w-5xl mx-auto space-y-6 text-gray-900">
         {/* Official Header */}
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-6 border-b-2 border-forest-900">
           <div className="flex items-start gap-3.5">
@@ -440,7 +440,8 @@ export const BilanTresorerieModule: React.FC<BilanTresorerieModuleProps> = ({
           </div>
 
           <div className="border border-gray-200 rounded-2xl overflow-hidden">
-            <table className="w-full text-xs text-left">
+            <div className="overflow-x-auto print:overflow-visible">
+            <table className="w-full text-xs text-left min-w-[560px] print:min-w-0">
               <thead className="bg-gray-100 text-gray-600 uppercase text-[10px] font-bold border-b border-gray-200">
                 <tr>
                   <th className="py-2.5 px-3">Date</th>
@@ -500,24 +501,25 @@ export const BilanTresorerieModule: React.FC<BilanTresorerieModuleProps> = ({
                 </tfoot>
               )}
             </table>
+            </div>
           </div>
         </div>
 
         {/* 4. Signatures Box for Bureau & AG */}
-        <div className="pt-8 grid grid-cols-3 gap-6 text-center text-xs">
-          <div className="p-4 rounded-2xl border border-dashed border-gray-300 h-28 flex flex-col justify-between">
+        <div className="pt-6 sm:pt-8 grid grid-cols-1 sm:grid-cols-3 print:grid-cols-3 gap-3 sm:gap-6 text-center text-xs">
+          <div className="p-4 rounded-2xl border border-dashed border-gray-300 h-20 sm:h-28 print:h-28 flex flex-col justify-between">
             <span className="font-bold uppercase text-[10px] tracking-wider text-gray-600">
               Le Trésorier Général
             </span>
             <span className="text-[10px] text-gray-400">Date, signature & cachet</span>
           </div>
-          <div className="p-4 rounded-2xl border border-dashed border-gray-300 h-28 flex flex-col justify-between">
+          <div className="p-4 rounded-2xl border border-dashed border-gray-300 h-20 sm:h-28 print:h-28 flex flex-col justify-between">
             <span className="font-bold uppercase text-[10px] tracking-wider text-gray-600">
               Commissaire aux Comptes
             </span>
             <span className="text-[10px] text-gray-400">Visa de contrôle</span>
           </div>
-          <div className="p-4 rounded-2xl border border-dashed border-gray-300 h-28 flex flex-col justify-between">
+          <div className="p-4 rounded-2xl border border-dashed border-gray-300 h-20 sm:h-28 print:h-28 flex flex-col justify-between">
             <span className="font-bold uppercase text-[10px] tracking-wider text-gray-600">
               Le Président du Syndic
             </span>

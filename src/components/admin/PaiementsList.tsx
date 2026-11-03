@@ -61,10 +61,10 @@ export const PaiementsList: React.FC<PaiementsListProps> = ({
       {/* Filter Tabs & Search */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         {/* Status Tabs */}
-        <div className="flex bg-gray-100 p-1 rounded-xl gap-1">
+        <div className="flex bg-gray-100 p-1 rounded-xl gap-1 overflow-x-auto no-scrollbar max-w-full">
           <button
             onClick={() => setFilterStatut('all')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
               filterStatut === 'all'
                 ? 'bg-white text-forest-900 shadow-sm'
                 : 'text-gray-600 hover:text-gray-900'
@@ -74,7 +74,7 @@ export const PaiementsList: React.FC<PaiementsListProps> = ({
           </button>
           <button
             onClick={() => setFilterStatut('en_attente')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-1.5 ${
               filterStatut === 'en_attente'
                 ? 'bg-amber-500 text-white shadow-sm'
                 : 'text-gray-600 hover:text-gray-900'
@@ -87,7 +87,7 @@ export const PaiementsList: React.FC<PaiementsListProps> = ({
           </button>
           <button
             onClick={() => setFilterStatut('valide')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
               filterStatut === 'valide'
                 ? 'bg-emerald-600 text-white shadow-sm'
                 : 'text-gray-600 hover:text-gray-900'
@@ -97,7 +97,7 @@ export const PaiementsList: React.FC<PaiementsListProps> = ({
           </button>
           <button
             onClick={() => setFilterStatut('rejete')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
               filterStatut === 'rejete'
                 ? 'bg-red-600 text-white shadow-sm'
                 : 'text-gray-600 hover:text-gray-900'
@@ -120,8 +120,114 @@ export const PaiementsList: React.FC<PaiementsListProps> = ({
         </div>
       </div>
 
-      {/* Payments Table */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+      {/* Mobile Payments Cards (< 768px) */}
+      <div className="md:hidden space-y-3">
+        {filtered.length === 0 ? (
+          <div className="bg-white rounded-2xl p-8 text-center text-gray-400 text-xs border border-gray-100">
+            Aucun paiement trouvé dans cette catégorie.
+          </div>
+        ) : (
+          filtered.map((p) => {
+            const prop = proprietaires.find((pr) => pr.id === p.proprietaire_id);
+            const act = activites.find((a) => a.id === p.activite_id);
+
+            return (
+              <div
+                key={p.id}
+                className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm space-y-3"
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <div className="font-semibold text-sm text-gray-900 truncate">
+                      {prop?.nom || 'Inconnu'}
+                    </div>
+                    <div className="flex items-center gap-1.5 mt-0.5 text-xs text-gray-500">
+                      <span className="px-1.5 py-0.2 rounded bg-emerald-50 text-emerald-800 font-mono font-bold text-[11px]">
+                        Lot {prop?.lot}
+                      </span>
+                      <span>· Îlot {prop?.ilot}</span>
+                    </div>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <div className="font-serif font-bold text-forest-800 text-base">
+                      {Number(p.montant).toLocaleString('fr-FR')} F
+                    </div>
+                    <span
+                      className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full mt-0.5 ${
+                        p.statut === 'valide'
+                          ? 'bg-emerald-100 text-emerald-800'
+                          : p.statut === 'en_attente'
+                          ? 'bg-amber-100 text-amber-800'
+                          : 'bg-red-100 text-red-800'
+                      }`}
+                    >
+                      {p.statut === 'valide'
+                        ? 'Validé'
+                        : p.statut === 'en_attente'
+                        ? 'En attente'
+                        : 'Rejeté'}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="p-2.5 rounded-xl bg-gray-50 border border-gray-100 text-xs space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium text-gray-800">
+                      {act?.icone} {act?.nom}
+                    </span>
+                    <span className="text-gray-500">
+                      {new Date(p.date).toLocaleDateString('fr-FR')}
+                    </span>
+                  </div>
+                  <div className="text-[11px] text-gray-500">
+                    {p.mode_paiement || 'Paiement direct'}
+                    {p.reference ? ` · Réf: ${p.reference}` : ''}
+                  </div>
+                  {p.note && <div className="text-[11px] italic text-gray-400">"{p.note}"</div>}
+                </div>
+
+                <div className="flex items-center justify-end gap-1.5 pt-0.5">
+                  {p.statut === 'en_attente' && (
+                    <>
+                      <button
+                        onClick={() => onValidatePayment(p.id)}
+                        className="flex-1 py-2 px-3 bg-emerald-600 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1 shadow-sm"
+                      >
+                        <Check className="w-3.5 h-3.5" />
+                        <span>Valider</span>
+                      </button>
+                      <button
+                        onClick={() => onRejectPayment(p.id)}
+                        className="py-2 px-3 bg-amber-100 text-amber-900 rounded-xl text-xs font-bold flex items-center justify-center gap-1"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                        <span>Rejeter</span>
+                      </button>
+                    </>
+                  )}
+                  <button
+                    onClick={() => onEditPaiement(p)}
+                    className="p-2 rounded-xl border border-gray-200 text-gray-700"
+                    title="Modifier"
+                  >
+                    <Edit2 className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    onClick={() => onDeletePaiement(p)}
+                    className="p-2 rounded-xl border border-red-200 bg-red-50/60 text-red-700"
+                    title="Supprimer"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
+
+      {/* Desktop Payments Table (>= 768px) */}
+      <div className="hidden md:block bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead className="bg-gray-50/80 text-gray-500 text-[11px] font-bold uppercase tracking-wider border-b border-gray-100">

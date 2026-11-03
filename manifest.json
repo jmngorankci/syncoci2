@@ -1,35 +1,65 @@
 {
-  "name": "SyndicCité — Gestion de Copropriété",
+  "id": "/",
+  "name": "SyndicCité — Gestion de Copropriété & Trésorerie",
   "short_name": "SyndicCité",
-  "description": "Application de gestion de syndic de copropriétaires",
-  "start_url": "/index.html",
+  "description": "Application PWA de gestion de syndic de copropriété : cotisations, dépenses par rubrique, validations et bilans PDF.",
+  "start_url": "/?source=pwa",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#1a3a2a",
-  "theme_color": "#1a3a2a",
-  "orientation": "portrait-primary",
+  "display_override": ["standalone", "minimal-ui"],
+  "background_color": "#0d2b1a",
+  "theme_color": "#163826",
+  "orientation": "any",
   "lang": "fr",
+  "dir": "ltr",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "/icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
-      "src": "icon-512.png",
+      "src": "/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
     }
   ],
-  "categories": ["finance", "utilities", "productivity"],
-  "screenshots": [],
+  "categories": ["finance", "business", "productivity", "utilities"],
   "shortcuts": [
     {
-      "name": "Payer une cotisation",
+      "name": "Tableau de bord",
+      "short_name": "Accueil",
+      "description": "Ouvrir le tableau de bord SyndicCité",
+      "url": "/?tab=dashboard",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Régler une cotisation",
       "short_name": "Payer",
-      "description": "Accéder rapidement au paiement",
-      "url": "/index.html#payer"
+      "description": "Soumettre un règlement de cotisation",
+      "url": "/?tab=payer",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Rapports & Relevés PDF",
+      "short_name": "Rapports",
+      "description": "Consulter et imprimer les relevés et bilans",
+      "url": "/?tab=rapports",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
     }
   ]
 }

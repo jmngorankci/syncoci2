@@ -458,7 +458,7 @@ export const RelevePaiementsModule: React.FC<RelevePaiementsModuleProps> = ({
       {/* ========================================================================= */}
       {/* DOCUMENT OFFICIEL IMPRIMABLE A4 (VISIBLE SUR ÉCRAN & CAPTURÉ EN PDF)       */}
       {/* ========================================================================= */}
-      <div className="print-document bg-white rounded-3xl p-8 sm:p-12 border border-gray-200 shadow-xl max-w-4xl mx-auto space-y-8 text-gray-900">
+      <div className="print-document bg-white rounded-3xl p-4 sm:p-10 lg:p-12 border border-gray-200 shadow-xl max-w-4xl mx-auto space-y-6 sm:space-y-8 text-gray-900">
         {/* Document Header */}
         <div className="flex flex-col sm:flex-row items-start justify-between gap-6 pb-6 border-b-2 border-forest-800">
           <div className="flex items-center gap-4">
@@ -565,7 +565,8 @@ export const RelevePaiementsModule: React.FC<RelevePaiementsModuleProps> = ({
           </div>
 
           <div className="border border-gray-200 rounded-2xl overflow-hidden">
-            <table className="w-full text-left text-xs">
+            <div className="overflow-x-auto print:overflow-visible">
+              <table className="w-full text-left text-xs min-w-[520px] print:min-w-0">
               <thead className="bg-forest-900 text-white font-semibold text-[11px] uppercase tracking-wider">
                 <tr>
                   <th className="py-3 px-4">Date</th>
@@ -625,6 +626,7 @@ export const RelevePaiementsModule: React.FC<RelevePaiementsModuleProps> = ({
                 )}
               </tbody>
             </table>
+            </div>
           </div>
         </div>
 
@@ -662,7 +664,7 @@ export const RelevePaiementsModule: React.FC<RelevePaiementsModuleProps> = ({
         </div>
 
         {/* Official Certification and Signature Area */}
-        <div className="pt-6 border-t-2 border-gray-200 grid grid-cols-2 gap-8 text-xs">
+        <div className="pt-6 border-t-2 border-gray-200 grid grid-cols-1 sm:grid-cols-2 print:grid-cols-2 gap-6 sm:gap-8 text-xs">
           <div className="space-y-3">
             <div className="flex items-center gap-2 text-forest-800 font-bold">
               <ShieldCheck className="w-4 h-4 text-emerald-600" />
@@ -678,7 +680,7 @@ export const RelevePaiementsModule: React.FC<RelevePaiementsModuleProps> = ({
             </div>
           </div>
 
-          <div className="text-right space-y-4">
+          <div className="sm:text-right print:text-right space-y-4">
             <div>
               <div className="font-bold text-gray-900">Le Bureau du Syndic</div>
               <div className="text-[11px] text-gray-500">Service Comptabilité & Recouvrement</div>

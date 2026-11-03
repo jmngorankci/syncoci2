@@ -284,11 +284,11 @@ export const DepensesView: React.FC<DepensesViewProps> = ({
       </div>
 
       {/* Sub-navigation Tabs */}
-      <div className="bg-white p-1.5 rounded-2xl border border-gray-100 shadow-sm inline-flex items-center gap-1.5">
+      <div className="bg-white p-1.5 rounded-2xl border border-gray-100 shadow-sm flex sm:inline-flex items-center gap-1.5 overflow-x-auto no-scrollbar max-w-full">
         <button
           type="button"
           onClick={() => setSubTab('journal')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
+          className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition-all ${
             subTab === 'journal'
               ? 'bg-forest-800 text-white shadow-sm'
               : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
@@ -301,7 +301,7 @@ export const DepensesView: React.FC<DepensesViewProps> = ({
         <button
           type="button"
           onClick={() => setSubTab('rubriques')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
+          className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition-all ${
             subTab === 'rubriques'
               ? 'bg-forest-800 text-white shadow-sm'
               : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
@@ -310,7 +310,7 @@ export const DepensesView: React.FC<DepensesViewProps> = ({
           <FolderKanban
             className={`w-4 h-4 ${subTab === 'rubriques' ? 'text-emerald-400' : 'text-gray-500'}`}
           />
-          <span>Paramétrage des Rubriques ({rubriques.length})</span>
+          <span>Rubriques ({rubriques.length})</span>
         </button>
       </div>
 
@@ -479,8 +479,124 @@ export const DepensesView: React.FC<DepensesViewProps> = ({
             )}
           </div>
 
-          {/* Expenses Table */}
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+          {/* Mobile Expenses Cards (< 768px) */}
+          <div className="md:hidden space-y-3">
+            {filteredDepenses.length === 0 ? (
+              <div className="bg-white rounded-2xl p-8 text-center text-gray-400 text-xs border border-gray-100">
+                Aucune opération de dépense enregistrée pour ces critères.
+              </div>
+            ) : (
+              filteredDepenses.map((d) => {
+                const rub = rubriques.find((r) => r.id === d.rubrique_id);
+                const sect = secteurs.find((s) => s.id === d.secteur_id);
+                const canModify = isAdmin || d.statut === 'en_attente';
+
+                return (
+                  <div
+                    key={d.id}
+                    className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm space-y-3"
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0">
+                        <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-gray-50 border border-gray-200 text-[11px] font-semibold text-gray-700 mb-1">
+                          <span>{rub?.icone || '📋'}</span>
+                          <span className="truncate">{rub?.nom || d.rubrique_id}</span>
+                        </div>
+                        <div className="font-semibold text-sm text-gray-900">{d.libelle}</div>
+                      </div>
+                      <div className="text-right shrink-0">
+                        <div className="font-serif font-bold text-rose-700 text-base">
+                          -{Number(d.montant).toLocaleString('fr-FR')} F
+                        </div>
+                        <div className="text-[11px] text-gray-400">
+                          {new Date(d.date).toLocaleDateString('fr-FR')}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="p-2.5 rounded-xl bg-gray-50 border border-gray-100 text-xs space-y-1">
+                      <div className="flex items-center justify-between text-gray-600">
+                        <span>{d.beneficiaire || 'Prestataire non précisé'}</span>
+                        <span className="font-mono text-[11px] text-gray-400">
+                          {d.reference_piece || d.id}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between text-[11px] text-gray-500">
+                        <span>
+                          {d.mode_paiement || 'Caisse'} · {sect ? sect.nom : 'Charges communes'}
+                        </span>
+                        <span
+                          className={`font-bold ${
+                            d.statut === 'valide'
+                              ? 'text-emerald-700'
+                              : d.statut === 'en_attente'
+                              ? 'text-amber-700'
+                              : 'text-red-700'
+                          }`}
+                        >
+                          {d.statut === 'valide'
+                            ? '✓ Validée'
+                            : d.statut === 'en_attente'
+                            ? '⏳ En attente'
+                            : '✕ Rejetée'}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-end gap-1.5 pt-0.5">
+                      {isAdmin && d.statut === 'en_attente' && (
+                        <>
+                          <button
+                            type="button"
+                            onClick={() => onValidateDepense(d.id)}
+                            className="flex-1 py-2 px-3 rounded-xl bg-emerald-600 text-white text-xs font-bold flex items-center justify-center gap-1"
+                          >
+                            <Check className="w-3.5 h-3.5" />
+                            <span>Valider</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => onRejectDepense(d.id)}
+                            className="py-2 px-3 rounded-xl bg-red-50 text-red-700 border border-red-200 text-xs font-bold flex items-center justify-center gap-1"
+                          >
+                            <X className="w-3.5 h-3.5" />
+                            <span>Rejeter</span>
+                          </button>
+                        </>
+                      )}
+
+                      {canModify ? (
+                        <>
+                          <button
+                            type="button"
+                            onClick={() => onOpenEditDepense(d)}
+                            className="p-2 rounded-xl border border-gray-200 text-forest-800"
+                          >
+                            <Edit2 className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => onDeleteDepense(d)}
+                            className="p-2 rounded-xl border border-red-200 bg-red-50/60 text-red-700"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 text-[11px] text-gray-400">
+                          <Lock className="w-3 h-3" />
+                          <span>Verrouillé</span>
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+
+          {/* Desktop Expenses Table (>= 768px) */}
+          <div className="hidden md:block bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
                 <thead className="bg-gray-50/80 text-gray-500 text-[11px] font-bold uppercase tracking-wider border-b border-gray-100">

@@ -10,18 +10,15 @@ import {
   Home, 
   Lock, 
   User, 
-  ArrowRight,
-  Database,
-  CheckCircle2,
-  Sparkles
+  ArrowRight
 } from 'lucide-react';
 
 interface LoginScreenProps {
-  onOpenSupabaseConfig: () => void;
+  onOpenSupabaseConfig?: () => void;
 }
 
-export const LoginScreen: React.FC<LoginScreenProps> = ({ onOpenSupabaseConfig }) => {
-  const { login, isSupabaseLive, selectDemoProfile } = useAuth();
+export const LoginScreen: React.FC<LoginScreenProps> = () => {
+  const { login } = useAuth();
   const [selectedRole, setSelectedRole] = useState<UserRole>('proprietaire');
   const [identifier, setIdentifier] = useState('Lot 1');
   const [password, setPassword] = useState('demo1234');
@@ -52,33 +49,9 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onOpenSupabaseConfig }
     setLoading(false);
   };
 
-  const demoAccounts = [
-    { label: 'Admin (Syndic)', role: 'admin' as UserRole, id: 'admin', icon: '⚙️', sub: 'Tous les droits' },
-    { label: 'Resp. Secteur 1', role: 'responsable' as UserRole, id: 'Secteur 1', icon: '👤', sub: 'Îlots 1 à 5' },
-    { label: 'Resp. Secteur 2', role: 'responsable' as UserRole, id: 'Secteur 2', icon: '👤', sub: 'Îlots 8 à 11' },
-    { label: 'Dr BOKA BOKA (Lot 1)', role: 'proprietaire' as UserRole, id: 'Lot 1', icon: '🏠', sub: 'Îlot 1' },
-    { label: 'KOUADIO YAO (Lot 72)', role: 'proprietaire' as UserRole, id: 'Lot 72', icon: '🏠', sub: 'Îlot 12' },
-  ];
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0a1e12] via-[#133020] to-[#1e4a32] flex items-center justify-center p-4 sm:p-6 lg:p-8">
       <div className="w-full max-w-md">
-        {/* Supabase Status Pill */}
-        <div className="flex justify-center mb-6">
-          <button
-            onClick={onOpenSupabaseConfig}
-            className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-medium border backdrop-blur-md transition-all shadow-md ${
-              isSupabaseLive
-                ? 'bg-emerald-950/70 border-emerald-500/40 text-emerald-300 hover:bg-emerald-900/80'
-                : 'bg-amber-950/70 border-amber-500/40 text-amber-300 hover:bg-amber-900/80'
-            }`}
-          >
-            <Database className={`w-3.5 h-3.5 ${isSupabaseLive ? 'text-emerald-400' : 'text-amber-400'}`} />
-            <span>{isSupabaseLive ? 'Supabase Live Connected' : 'Mode Démo Réactif Actif'}</span>
-            <span className="text-[10px] bg-white/10 px-1.5 py-0.5 rounded">Config</span>
-          </button>
-        </div>
-
         {/* Main Card */}
         <div className="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 border border-white/20">
           {/* Logo Header */}
@@ -160,7 +133,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onOpenSupabaseConfig }
                   type="text"
                   value={identifier}
                   onChange={(e) => setIdentifier(e.target.value)}
-                  placeholder={selectedRole === 'proprietaire' ? 'Ex: A01 ou Kouamé' : selectedRole === 'responsable' ? 'Ex: Kofi' : 'admin'}
+                  placeholder={selectedRole === 'proprietaire' ? 'Ex: Lot 1 ou Kouamé' : selectedRole === 'responsable' ? 'Ex: Secteur 1' : 'admin'}
                   className="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-gray-50/50"
                   required
                 />
@@ -194,40 +167,6 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onOpenSupabaseConfig }
               <ArrowRight className="w-4 h-4" />
             </button>
           </form>
-
-          {/* Quick Demo Access Bar */}
-          <div className="mt-6 pt-5 border-t border-gray-100">
-            <div className="flex items-center justify-between mb-2.5">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400 flex items-center gap-1">
-                <Sparkles className="w-3 h-3 text-amber-500" />
-                Accès rapide démo
-              </span>
-              <span className="text-[10px] text-gray-400">1-clic</span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-1.5">
-              {demoAccounts.map((acc, idx) => (
-                <button
-                  key={idx}
-                  type="button"
-                  onClick={() => {
-                    handleRoleSelect(acc.role);
-                    setIdentifier(acc.id);
-                    login(acc.role, acc.id);
-                  }}
-                  className="text-left p-2 rounded-lg bg-gray-50 hover:bg-forest-50 border border-gray-100 hover:border-forest-200 transition-colors flex items-center gap-2 group"
-                >
-                  <span className="text-sm">{acc.icon}</span>
-                  <div className="truncate">
-                    <div className="text-xs font-semibold text-gray-800 group-hover:text-forest-900 truncate">
-                      {acc.label}
-                    </div>
-                    <div className="text-[10px] text-gray-400 truncate">{acc.sub}</div>
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
         </div>
 
         {/* Footer info */}

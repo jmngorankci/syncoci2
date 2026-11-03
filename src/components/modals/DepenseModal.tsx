@@ -143,8 +143,8 @@ export const DepenseModal: React.FC<DepenseModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in">
-      <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full overflow-hidden border border-gray-100">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/60 backdrop-blur-sm animate-in fade-in">
+      <div className="bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl max-w-2xl w-full overflow-hidden border border-gray-100">
         {/* Header */}
         <div className="p-6 bg-gradient-to-r from-[#0d2b1a] to-[#1f4d34] text-white flex items-center justify-between">
           <div className="flex items-center gap-3">

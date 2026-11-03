@@ -67,33 +67,33 @@ export const RapportsView: React.FC<RapportsViewProps> = ({
   // Bureau du Syndic (Admin + Responsables)
   return (
     <div className="space-y-6">
-      <div className="no-print bg-white p-1.5 rounded-2xl border border-gray-100 shadow-sm inline-flex flex-wrap items-center gap-1.5">
+      <div className="no-print bg-white p-1.5 rounded-2xl border border-gray-100 shadow-sm flex sm:inline-flex items-center gap-1.5 overflow-x-auto no-scrollbar max-w-full">
         <button
           type="button"
           onClick={() => setActiveTab('releve')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
+          className={`flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition-all ${
             activeTab === 'releve'
               ? 'bg-forest-800 text-white shadow-sm'
               : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
           }`}
         >
           <FileText
-            className={`w-4 h-4 ${activeTab === 'releve' ? 'text-emerald-400' : 'text-gray-500'}`}
+            className={`w-4 h-4 shrink-0 ${activeTab === 'releve' ? 'text-emerald-400' : 'text-gray-500'}`}
           />
-          <span>État des Paiements par Propriétaire (PDF)</span>
+          <span>Relevé Propriétaire (PDF)</span>
         </button>
 
         <button
           type="button"
           onClick={() => setActiveTab('bilan')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
+          className={`flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition-all ${
             activeTab === 'bilan'
               ? 'bg-forest-800 text-white shadow-sm'
               : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
           }`}
         >
           <Scale
-            className={`w-4 h-4 ${activeTab === 'bilan' ? 'text-emerald-400' : 'text-gray-500'}`}
+            className={`w-4 h-4 shrink-0 ${activeTab === 'bilan' ? 'text-emerald-400' : 'text-gray-500'}`}
           />
           <span>Bilan Entrées / Sorties (PDF)</span>
         </button>
@@ -101,16 +101,16 @@ export const RapportsView: React.FC<RapportsViewProps> = ({
         <button
           type="button"
           onClick={() => setActiveTab('synthese')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
+          className={`flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition-all ${
             activeTab === 'synthese'
               ? 'bg-forest-800 text-white shadow-sm'
               : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
           }`}
         >
           <TrendingUp
-            className={`w-4 h-4 ${activeTab === 'synthese' ? 'text-emerald-400' : 'text-gray-500'}`}
+            className={`w-4 h-4 shrink-0 ${activeTab === 'synthese' ? 'text-emerald-400' : 'text-gray-500'}`}
           />
-          <span>Synthèse Financière Globale</span>
+          <span>Synthèse Globale</span>
         </button>
       </div>
 

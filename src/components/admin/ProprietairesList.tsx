@@ -56,7 +56,7 @@ export const ProprietairesList: React.FC<ProprietairesListProps> = ({
 
         <button
           onClick={onOpenAddModal}
-          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-forest-700 hover:bg-forest-800 text-white text-xs sm:text-sm font-semibold shadow-md transition-all self-start sm:self-auto"
+          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-forest-700 hover:bg-forest-800 text-white text-xs sm:text-sm font-semibold shadow-md transition-all"
         >
           <UserPlus className="w-4 h-4" />
           <span>Ajouter un propriétaire</span>
@@ -92,8 +92,113 @@ export const ProprietairesList: React.FC<ProprietairesListProps> = ({
         </div>
       </div>
 
-      {/* Table */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+      {/* Mobile Card List (< 768px) */}
+      <div className="md:hidden space-y-3">
+        {filtered.length === 0 ? (
+          <div className="bg-white rounded-2xl p-8 text-center text-gray-400 text-xs border border-gray-100">
+            Aucun propriétaire ne correspond à votre recherche.
+          </div>
+        ) : (
+          filtered.map((p) => {
+            const sect = secteurs.find((s) => s.id === p.secteur_id);
+            const propPaiements = paiements.filter((pay) => pay.proprietaire_id === p.id);
+            const totalPaid = propPaiements
+              .filter((pay) => pay.statut === 'valide')
+              .reduce((sum, pay) => sum + Number(pay.montant), 0);
+            const pendingCount = propPaiements.filter((pay) => pay.statut === 'en_attente').length;
+
+            return (
+              <div
+                key={p.id}
+                className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm space-y-3"
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <div className="w-10 h-10 rounded-full bg-forest-100 text-forest-800 text-xs font-bold flex items-center justify-center shrink-0">
+                      {p.nom
+                        .split(' ')
+                        .map((n) => n[0])
+                        .join('')
+                        .slice(0, 2)
+                        .toUpperCase()}
+                    </div>
+                    <div className="min-w-0">
+                      <div className="font-semibold text-sm text-gray-900 truncate">{p.nom}</div>
+                      <div className="text-[11px] text-gray-500 truncate">
+                        {sect?.nom || 'Non assigné'}
+                      </div>
+                    </div>
+                  </div>
+                  <span className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-800 font-mono font-bold text-xs border border-emerald-200 shrink-0">
+                    LOT {p.lot}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between text-xs bg-gray-50 rounded-xl p-2.5 border border-gray-100">
+                  <div className="space-y-0.5 min-w-0">
+                    <div className="flex items-center gap-1.5 text-gray-600">
+                      <Phone className="w-3 h-3 text-gray-400 shrink-0" />
+                      <a href={`tel:${p.tel}`} className="hover:underline">
+                        {p.tel || '—'}
+                      </a>
+                    </div>
+                    <div className="text-[11px] text-gray-400">Îlot {p.ilot}</div>
+                  </div>
+
+                  <div className="text-right shrink-0">
+                    <div className="font-bold text-forest-800">
+                      {totalPaid.toLocaleString('fr-FR')} F
+                    </div>
+                    {pendingCount > 0 ? (
+                      <span className="text-[10px] font-bold text-amber-700">
+                        ⏳ {pendingCount} en attente
+                      </span>
+                    ) : (
+                      <span className="text-[10px] text-gray-400">Cotisations</span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-1.5 pt-1">
+                  {onGenerateReleve && (
+                    <button
+                      onClick={() => onGenerateReleve(p)}
+                      className="flex-1 inline-flex items-center justify-center gap-1 py-2 px-2 rounded-xl border border-purple-200 bg-purple-50/70 text-purple-900 text-xs font-semibold"
+                    >
+                      <FileText className="w-3.5 h-3.5 text-purple-700" />
+                      <span>Relevé</span>
+                    </button>
+                  )}
+                  <button
+                    onClick={() => onViewProprietaire(p)}
+                    className="flex-1 inline-flex items-center justify-center gap-1 py-2 px-2 rounded-xl border border-gray-200 text-forest-800 text-xs font-semibold"
+                  >
+                    <Eye className="w-3.5 h-3.5" />
+                    <span>Fiche</span>
+                  </button>
+                  <button
+                    onClick={() => onEditProprietaire(p)}
+                    title="Modifier"
+                    className="p-2 rounded-xl border border-emerald-200 bg-emerald-50/60 text-emerald-800"
+                  >
+                    <Edit2 className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    onClick={() => onDeleteProprietaire(p)}
+                    title="Supprimer"
+                    className="p-2 rounded-xl border border-red-200 bg-red-50/60 text-red-700"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
+
+      {/* Desktop Table (>= 768px) */}
+      <div className="hidden md:block bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead className="bg-gray-50/80 text-gray-500 text-[11px] font-bold uppercase tracking-wider border-b border-gray-100">

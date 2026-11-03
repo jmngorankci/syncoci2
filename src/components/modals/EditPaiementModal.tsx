@@ -69,8 +69,8 @@ export const EditPaiementModal: React.FC<EditPaiementModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in">
-      <div className="bg-white rounded-3xl shadow-2xl max-w-lg w-full overflow-hidden border border-gray-100">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/60 backdrop-blur-sm animate-in fade-in">
+      <div className="bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl max-w-lg w-full max-h-[90dvh] overflow-y-auto border border-gray-100">
         <div className="p-6 bg-forest-900 text-white flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <CreditCard className="w-5 h-5 text-emerald-400" />
