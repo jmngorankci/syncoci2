@@ -50,6 +50,7 @@ import { EditPersonalProfileModal } from '@/components/modals/EditPersonalProfil
 import { ViewProprietaireModal } from '@/components/modals/ViewProprietaireModal';
 import { DepenseModal } from '@/components/modals/DepenseModal';
 import { RubriqueDepenseModal } from '@/components/modals/RubriqueDepenseModal';
+import { ChangePasswordModal } from '@/components/modals/ChangePasswordModal';
 
 import { CheckCircle2, AlertTriangle, Plus } from 'lucide-react';
 
@@ -84,6 +85,7 @@ export default function HomePage() {
 
   // Modals
   const [isSupabaseModalOpen, setIsSupabaseModalOpen] = useState(false);
+  const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
   const [isAddPropModalOpen, setIsAddPropModalOpen] = useState(false);
   const [isEditPropModalOpen, setIsEditPropModalOpen] = useState(false);
   const [editingProprietaire, setEditingProprietaire] = useState<Proprietaire | null>(null);
@@ -471,8 +473,13 @@ export default function HomePage() {
     return (
       <div className="min-h-screen bg-[#0d2b1a] flex items-center justify-center">
         <div className="text-center space-y-4">
-          <div className="w-12 h-12 border-4 border-emerald-400/20 border-t-emerald-400 rounded-full animate-spin mx-auto" />
-          <div className="text-sm font-medium text-emerald-200">Chargement de SyndicCité...</div>
+          <div className="w-12 h-12 border-4 border-orange-500/20 border-t-orange-500 rounded-full animate-spin mx-auto" />
+          <div className="text-sm font-bold tracking-wide">
+            <span className="text-orange-400">SYNCOCI 2</span>
+            <span className="text-emerald-300 font-normal block text-xs mt-1">
+              Gestion des Copropriétaires de la Cité Ivoire 2
+            </span>
+          </div>
         </div>
       </div>
     );
@@ -507,6 +514,7 @@ export default function HomePage() {
       <Navbar
         currentTab={currentTab}
         onSelectTab={(tab) => setCurrentTab(tab)}
+        onOpenChangePassword={() => setIsChangePasswordModalOpen(true)}
       />
 
       {/* Main Container (pb-24 on mobile for fixed bottom PWA navigation bar) */}
@@ -835,6 +843,7 @@ export default function HomePage() {
                   setEditingPersonalProfile(p);
                   setIsEditPersonalProfileModalOpen(true);
                 }}
+                onOpenChangePassword={() => setIsChangePasswordModalOpen(true)}
               />
             )}
           </>
@@ -864,6 +873,15 @@ export default function HomePage() {
       <SupabaseConfigModal
         isOpen={isSupabaseModalOpen}
         onClose={() => setIsSupabaseModalOpen(false)}
+      />
+
+      <ChangePasswordModal
+        isOpen={isChangePasswordModalOpen}
+        onClose={() => setIsChangePasswordModalOpen(false)}
+        onSuccess={(msg) => {
+          showToast(msg);
+          loadData();
+        }}
       />
 
       {/* Propriétaire Modals */}

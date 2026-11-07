@@ -13,17 +13,20 @@ import {
   ChevronDown,
   LayoutGrid,
   X,
+  KeyRound,
 } from 'lucide-react';
 
 interface NavbarProps {
   currentTab: string;
   onSelectTab: (tab: string) => void;
   onOpenSupabaseConfig?: () => void;
+  onOpenChangePassword?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
   currentTab,
   onSelectTab,
+  onOpenChangePassword,
 }) => {
   const { user, role, switchRole, logout } = useAuth();
   const [showRoleDropdown, setShowRoleDropdown] = useState(false);
@@ -90,20 +93,21 @@ export const Navbar: React.FC<NavbarProps> = ({
               onClick={() => onSelectTab('dashboard')}
               className="flex items-center gap-2.5 min-w-0 cursor-pointer"
             >
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-forest-500 to-forest-300 flex items-center justify-center text-forest-950 font-bold shadow-md shadow-forest-950/20 shrink-0">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 border border-emerald-400/40 flex items-center justify-center text-white font-bold shadow-md shadow-orange-950/30 shrink-0">
                 <Building2 className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
               <div className="min-w-0">
-                <div className="font-serif text-lg sm:text-xl font-bold tracking-tight text-white flex items-center gap-1.5 truncate">
+                <div className="font-serif text-lg sm:text-xl font-extrabold tracking-tight flex items-center gap-1.5 truncate">
                   <span>
-                    Syndic<span className="text-emerald-300 font-normal">Cité</span>
+                    <span className="text-orange-400">SYNCOCI</span>{' '}
+                    <span className="text-emerald-400">2</span>
                   </span>
-                  <span className="hidden lg:inline-block text-[10px] uppercase font-sans tracking-widest px-2 py-0.5 rounded-full bg-emerald-900/80 text-emerald-300 border border-emerald-700/40">
+                  <span className="hidden lg:inline-block text-[10px] uppercase font-sans tracking-widest px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-300 border border-orange-400/30">
                     PWA
                   </span>
                 </div>
-                <p className="text-[11px] text-forest-200/80 hidden sm:block truncate">
-                  Gestion de Copropriété
+                <p className="text-[11px] font-medium text-emerald-300 hidden sm:block truncate">
+                  Gestion des Copropriétaires de la Cité Ivoire 2
                 </p>
               </div>
             </div>
@@ -193,8 +197,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                 )}
               </div>
 
-              {/* User Info & Logout */}
-              <div className="flex items-center gap-2 pl-1.5 sm:pl-2 border-l border-forest-700/60">
+              {/* User Info, Change Password & Logout */}
+              <div className="flex items-center gap-1.5 sm:gap-2 pl-1.5 sm:pl-2 border-l border-forest-700/60">
                 <div className="w-8 h-8 rounded-full bg-forest-600 text-white text-xs font-semibold flex items-center justify-center shadow-inner">
                   {user?.initiales || 'AD'}
                 </div>
@@ -204,6 +208,16 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </div>
                   <div className="text-[10px] text-forest-300 mt-0.5 truncate">{user?.email}</div>
                 </div>
+                {onOpenChangePassword && (
+                  <button
+                    type="button"
+                    onClick={onOpenChangePassword}
+                    className="p-1.5 text-orange-300 hover:text-white hover:bg-forest-800 rounded-lg transition-colors"
+                    title="Modifier mon mot de passe"
+                  >
+                    <KeyRound className="w-4 h-4" />
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={logout}
@@ -324,8 +338,9 @@ export const Navbar: React.FC<NavbarProps> = ({
           >
             <div className="flex items-center justify-between pb-2 border-b border-gray-100">
               <div>
-                <h3 className="font-serif text-base font-bold text-gray-900">
-                  Navigation SyndicCité
+                <h3 className="font-serif text-base font-bold">
+                  <span className="text-orange-500">SYNCOCI</span>{' '}
+                  <span className="text-emerald-500">2</span>
                 </h3>
                 <p className="text-[11px] text-gray-500">
                   Connecté en tant que {user?.nom} ({role})

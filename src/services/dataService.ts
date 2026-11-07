@@ -106,12 +106,32 @@ export const dataService = {
     const supabase = getSupabase();
     if (supabase) {
       try {
-        const { data, error } = await supabase
-          .from('paiements')
-          .select('*')
-          .order('date', { ascending: false });
-        if (!error && data && data.length > 0) {
-          return data as Paiement[];
+        const allPaiements: Paiement[] = [];
+        const pageSize = 1000;
+        let from = 0;
+
+        while (true) {
+          const { data, error } = await supabase
+            .from('paiements')
+            .select('*')
+            .order('date', { ascending: false })
+            .range(from, from + pageSize - 1);
+
+          if (error) {
+            throw error;
+          }
+          if (!data || data.length === 0) {
+            break;
+          }
+          allPaiements.push(...(data as Paiement[]));
+          if (data.length < pageSize) {
+            break;
+          }
+          from += pageSize;
+        }
+
+        if (allPaiements.length > 0) {
+          return allPaiements;
         }
       } catch (err) {
         console.warn('Supabase getPaiements error, using local fallback:', err);

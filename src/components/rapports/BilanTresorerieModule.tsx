@@ -262,12 +262,13 @@ export const BilanTresorerieModule: React.FC<BilanTresorerieModuleProps> = ({
         {/* Official Header */}
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-6 border-b-2 border-forest-900">
           <div className="flex items-start gap-3.5">
-            <div className="w-12 h-12 rounded-2xl bg-forest-900 text-white flex items-center justify-center shrink-0">
-              <Building2 className="w-6 h-6 text-emerald-400" />
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 text-white flex items-center justify-center shrink-0">
+              <Building2 className="w-6 h-6 text-white" />
             </div>
             <div>
-              <div className="text-[11px] font-bold uppercase tracking-widest text-forest-700">
-                Bureau Exécutif du Syndic · Document Financier Interne
+              <div className="text-[11px] font-bold uppercase tracking-widest">
+                <span className="text-orange-500">SYNCOCI 2</span>{' '}
+                <span className="text-emerald-600">· Gestion des Copropriétaires de la Cité Ivoire 2</span>
               </div>
               <h1 className="font-serif text-2xl font-bold text-gray-900 mt-0.5">
                 ÉTAT DE TRÉSORERIE — ENTRÉES & SORTIES DE CAISSE

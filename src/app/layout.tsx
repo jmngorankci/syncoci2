@@ -11,25 +11,24 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "SyndicCité — Gestion de Copropriété & Cotisations",
+  title: "SYNCOCI 2 — Gestion des Copropriétaires de la Cité Ivoire 2",
   description:
-    "Application PWA moderne de gestion de syndic de copropriété connectée à Supabase. Gestion des résidents, secteurs, cotisations, dépenses par rubrique et bilans PDF.",
+    "SYNCOCI 2 : Plateforme PWA de Gestion des Copropriétaires de la Cité Ivoire 2. Gestion des résidents, secteurs, cotisations, dépenses par rubrique et bilans PDF.",
   keywords: [
+    "SYNCOCI 2",
+    "Cité Ivoire 2",
     "syndic",
-    "copropriété",
+    "copropriétaires",
     "cotisations",
     "dépenses",
-    "résidence",
     "PWA",
-    "Next.js",
-    "Supabase",
   ],
-  authors: [{ name: "SyndicCité Team" }],
+  authors: [{ name: "SYNCOCI 2" }],
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "SyndicCité",
+    title: "SYNCOCI 2",
   },
   formatDetection: {
     telephone: false,

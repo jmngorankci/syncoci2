@@ -71,10 +71,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 <span>{new Date().toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
               </div>
               <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-white">
-                Tableau de Bord Syndic
+                <span className="text-orange-400">SYNCOCI</span>{' '}
+                <span className="text-emerald-400">2</span> — Tableau de Bord
               </h1>
-              <p className="text-sm text-forest-200 mt-1 max-w-xl">
-                Supervision globale de la Résidence Les Palmiers — 4 Secteurs, {proprietaires.length} Copropriétaires actifs.
+              <p className="text-sm text-emerald-300 font-medium mt-1 max-w-xl">
+                Gestion des Copropriétaires de la Cité Ivoire 2 — 4 Secteurs, {proprietaires.length} Copropriétaires actifs.
               </p>
             </div>
 

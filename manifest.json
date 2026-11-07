@@ -1,8 +1,8 @@
 {
   "id": "/",
-  "name": "SyndicCité — Gestion de Copropriété & Trésorerie",
-  "short_name": "SyndicCité",
-  "description": "Application PWA de gestion de syndic de copropriété : cotisations, dépenses par rubrique, validations et bilans PDF.",
+  "name": "SYNCOCI 2 — Gestion des Copropriétaires de la Cité Ivoire 2",
+  "short_name": "SYNCOCI 2",
+  "description": "Gestion des Copropriétaires de la Cité Ivoire 2 : cotisations, dépenses par rubrique, validations et bilans PDF.",
   "start_url": "/?source=pwa",
   "scope": "/",
   "display": "standalone",

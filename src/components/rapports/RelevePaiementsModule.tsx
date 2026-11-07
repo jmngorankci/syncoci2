@@ -462,15 +462,16 @@ export const RelevePaiementsModule: React.FC<RelevePaiementsModuleProps> = ({
         {/* Document Header */}
         <div className="flex flex-col sm:flex-row items-start justify-between gap-6 pb-6 border-b-2 border-forest-800">
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-forest-900 text-white flex items-center justify-center shadow-md">
-              <Building2 className="w-8 h-8 text-emerald-400" />
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 text-white flex items-center justify-center shadow-md">
+              <Building2 className="w-8 h-8 text-white" />
             </div>
             <div>
-              <div className="font-serif text-2xl font-bold tracking-tight text-forest-950">
-                SYNDIC<span className="text-emerald-700 font-normal">CITÉ</span>
+              <div className="font-serif text-2xl font-extrabold tracking-tight">
+                <span className="text-orange-500">SYNCOCI</span>{' '}
+                <span className="text-emerald-500">2</span>
               </div>
-              <div className="text-xs uppercase tracking-widest text-forest-800 font-bold">
-                Résidence Les Palmiers
+              <div className="text-xs uppercase tracking-widest text-emerald-600 font-bold">
+                Gestion des Copropriétaires de la Cité Ivoire 2
               </div>
               <div className="text-[11px] text-gray-500">
                 Syndic de Copropriété · Abidjan, Côte d'Ivoire
@@ -486,7 +487,7 @@ export const RelevePaiementsModule: React.FC<RelevePaiementsModuleProps> = ({
               Émis le : {new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })}
             </div>
             <div className="text-[11px] text-gray-400">
-              Système certifié SyndicCité Cloud
+              Système certifié SYNCOCI 2
             </div>
           </div>
         </div>
@@ -671,7 +672,7 @@ export const RelevePaiementsModule: React.FC<RelevePaiementsModuleProps> = ({
               <span>Authenticité & Rapprochement</span>
             </div>
             <p className="text-[11px] text-gray-500 leading-relaxed">
-              Le présent relevé de situation est délivré par le Syndic de la Résidence Les Palmiers
+              Le présent relevé de situation est délivré par le Syndic de la Cité Ivoire 2 (SYNCOCI 2)
               pour servir et valoir ce que de droit. Toutes les sommes marquées "Validé" ont été dûment
               rapprochées avec les relevés bancaires ou comptes de collecte officiels.
             </p>
@@ -692,7 +693,7 @@ export const RelevePaiementsModule: React.FC<RelevePaiementsModuleProps> = ({
                 Cachet du Syndic
               </div>
               <div className="text-xs font-serif italic text-forest-950 font-bold py-2">
-                SyndicCité Résidence Les Palmiers
+                <span className="text-orange-500">SYNCOCI 2</span> — Cité Ivoire 2
               </div>
               <div className="text-[9px] text-forest-700 font-mono">
                 SIGNÉ NUMÉRIQUEMENT

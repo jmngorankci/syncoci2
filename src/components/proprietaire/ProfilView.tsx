@@ -3,7 +3,7 @@
 import React from 'react';
 import { Secteur, Proprietaire, Paiement, CurrentUser } from '@/types/database';
 import { useAuth } from '@/context/AuthContext';
-import { User, Phone, Mail, Home, MapPin, ShieldCheck, LogOut, CheckCircle2, Edit2, FileText } from 'lucide-react';
+import { User, Phone, Mail, Home, MapPin, ShieldCheck, LogOut, CheckCircle2, Edit2, FileText, KeyRound } from 'lucide-react';
 
 interface ProfilViewProps {
   currentUser: CurrentUser;
@@ -12,6 +12,7 @@ interface ProfilViewProps {
   paiements: Paiement[];
   onNavigate?: (tab: string) => void;
   onOpenEditPersonalProfile: (prop: Proprietaire) => void;
+  onOpenChangePassword?: () => void;
 }
 
 export const ProfilView: React.FC<ProfilViewProps> = ({
@@ -21,6 +22,7 @@ export const ProfilView: React.FC<ProfilViewProps> = ({
   paiements,
   onNavigate,
   onOpenEditPersonalProfile,
+  onOpenChangePassword,
 }) => {
   const { logout } = useAuth();
   const currentProp = proprietaires.find((p) => p.id === currentUser.proprietaire_id) || proprietaires[0];
@@ -60,13 +62,25 @@ export const ProfilView: React.FC<ProfilViewProps> = ({
             </div>
           </div>
 
-          <button
-            onClick={() => onOpenEditPersonalProfile(currentProp)}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-forest-700 hover:bg-forest-800 text-white text-xs font-semibold shadow-md transition-all self-start sm:self-auto"
-          >
-            <Edit2 className="w-3.5 h-3.5 text-emerald-300" />
-            <span>Modifier mes coordonnées</span>
-          </button>
+          <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
+            <button
+              onClick={() => onOpenEditPersonalProfile(currentProp)}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-forest-700 hover:bg-forest-800 text-white text-xs font-semibold shadow-md transition-all"
+            >
+              <Edit2 className="w-3.5 h-3.5 text-emerald-300" />
+              <span>Modifier mes coordonnées</span>
+            </button>
+
+            {onOpenChangePassword && (
+              <button
+                onClick={onOpenChangePassword}
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold shadow-md transition-all"
+              >
+                <KeyRound className="w-3.5 h-3.5 text-white" />
+                <span>Modifier mon mot de passe</span>
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Detailed Information Grid */}

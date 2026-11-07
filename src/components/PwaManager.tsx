@@ -143,10 +143,11 @@ export const PwaManager: React.FC = () => {
             </div>
             <div className="min-w-0">
               <div className="text-xs font-bold text-white truncate">
-                Installer SyndicCité (PWA)
+                Installer <span className="text-orange-400">SYNCOCI</span>{' '}
+                <span className="text-emerald-400">2</span> (PWA)
               </div>
               <div className="text-[11px] text-emerald-200/80 line-clamp-1">
-                Accès rapide sur l’écran d’accueil & mode hors-ligne
+                Gestion des Copropriétaires de la Cité Ivoire 2
               </div>
             </div>
           </div>
@@ -189,8 +190,8 @@ export const PwaManager: React.FC = () => {
               </button>
             </div>
             <p className="text-xs text-gray-600 leading-relaxed">
-              Pour installer <strong>SyndicCité</strong> comme une application native sur votre
-              écran d’accueil :
+              Pour installer <strong className="text-orange-500">SYNCOCI 2</strong> comme une
+              application native sur votre écran d’accueil :
             </p>
             <ol className="space-y-3 text-xs text-gray-800">
               <li className="flex items-center gap-3 p-2.5 rounded-xl bg-gray-50 border border-gray-100">

@@ -57,8 +57,8 @@ export const ProprietaireDashboard: React.FC<ProprietaireDashboardProps> = ({
             <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-white">
               Bonjour, {currentProp?.nom.split(' ')[0]} 👋
             </h1>
-            <p className="text-xs sm:text-sm text-emerald-100 mt-1">
-              Bienvenue dans votre espace copropriétaire — Résidence Les Palmiers
+            <p className="text-xs sm:text-sm text-emerald-300 font-medium mt-1">
+              <span className="text-orange-400 font-bold">SYNCOCI 2</span> — Gestion des Copropriétaires de la Cité Ivoire 2
             </p>
           </div>
 
